@@ -1,11 +1,50 @@
 {
   "_help": "Site-wide settings. apiBase stays empty until the booking backend is connected; forms then show a 'not connected yet' notice instead of failing silently.",
   "siteUrl": "https://horseandmind.ch",
+  "summary": "Pferdegestütztes Coaching für Kinder und Erwachsene in Winterthur (Schweiz) mit Manuela Pattynama: Einzelcoaching, Reitpädagogik, Kids Camps, Wingwave und Epigenetik. Angebote auf Deutsch.",
+  "email": "info@horseandmind.ch",
+  "address": {
+    "streetAddress": "Hegifeldstrasse 6B",
+    "postalCode": "8404",
+    "addressLocality": "Winterthur",
+    "addressRegion": "ZH",
+    "addressCountry": "CH"
+  },
+  "venue": {
+    "name": "Binzenloo",
+    "address": {
+      "streetAddress": "Eidbergstrasse 57",
+      "postalCode": "8405",
+      "addressLocality": "Winterthur",
+      "addressRegion": "ZH",
+      "addressCountry": "CH"
+    }
+  },
+  "areaServed": [
+    "Winterthur",
+    "Kanton Zürich"
+  ],
+  "sameAs": [
+    "https://www.instagram.com/horseandmind",
+    "https://www.facebook.com/horseandmind.ch"
+  ],
   "apiBase": "",
   "services": [
-    { "id": "erstgespraech", "label": "Erstgespräch", "minutes": 30 },
-    { "id": "coaching", "label": "Coaching", "minutes": null },
-    { "id": "reitpaedagogik", "label": "Reitpädagogik", "minutes": null }
+    {
+      "id": "erstgespraech",
+      "label": "Erstgespräch",
+      "minutes": 30
+    },
+    {
+      "id": "coaching",
+      "label": "Coaching",
+      "minutes": null
+    },
+    {
+      "id": "reitpaedagogik",
+      "label": "Reitpädagogik",
+      "minutes": null
+    }
   ],
   "timezone": "Europe/Zurich"
 }
