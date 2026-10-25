@@ -9,6 +9,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Old WordPress URLs → new pages (keeps Google rankings and old links working)
 Redirect 301 /kids-mini-camp/ /kids/land-der-gefuehle/
+Redirect 301 /kids/workshop/ /kids/
 Redirect 301 /privacy-policy/ /datenschutz/
 Redirect 301 /wp-admin /
 Redirect 301 /wp-login.php /
