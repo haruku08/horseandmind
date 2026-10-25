@@ -23,6 +23,14 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
    - Not decided yet: payments online or not.
 6. **Zoho migration (later):** owner will export Leads/Contacts as CSV and explain which misused field means what. Plan: map fields, dedupe by email, link parents/children, keep Zoho ID, dry run with report, then import; run both systems in parallel 1–2 weeks.
 
+## Options considered and set aside
+
+- **PHP on the shared host** for the booking backend – dropped over security/maintenance concerns; use serverless functions instead.
+- **Pure React app** – rejected: a browser-only app can't hold API keys; a static site plus small server functions is faster and better for SEO.
+- **Zoho Bookings / keep Calendly** – would work with Zoho CRM, but the owner wants one simple system of their own.
+- **Keep Zoho via webform or API** – possible (the free edition does include API access), but its field limits are the problem, so it gets replaced by the mini-CRM. Zoho stays running until the import is done.
+- **Keep WordPress, only new theme** – rejected in favour of the static rebuild.
+
 ## Repo layout
 
 ```
