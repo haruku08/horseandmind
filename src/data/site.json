@@ -1,0 +1,11 @@
+{
+  "_help": "Site-wide settings. apiBase stays empty until the booking backend is connected; forms then show a 'not connected yet' notice instead of failing silently.",
+  "siteUrl": "https://horseandmind.ch",
+  "apiBase": "",
+  "services": [
+    { "id": "erstgespraech", "label": "Erstgespräch", "minutes": 30 },
+    { "id": "coaching", "label": "Coaching", "minutes": null },
+    { "id": "reitpaedagogik", "label": "Reitpädagogik", "minutes": null }
+  ],
+  "timezone": "Europe/Zurich"
+}

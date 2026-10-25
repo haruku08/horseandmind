@@ -1,0 +1,69 @@
+<!--meta {"title": "Anmeldung Kids Camp «Das Land der Gefühle» | Horse & Mind", "description": "Anmeldung für das Kids Camp «Das Land der Gefühle» in Winterthur.", "nav": "camps", "noindex": true} -->
+<section class="section" style="padding-top: 24px">
+  <div class="wrap split split--top">
+    <div class="stack">
+      <p class="eyebrow">Anmeldung Kids Camp</p>
+      <h1>Das Land der Gefühle</h1>
+      <p class="lead">CHF 360 · Montag bis Donnerstag, jeweils vormittags · Binzenloo, Winterthur</p>
+      <p class="body">Nach dem Absenden bekommst du eine Bestätigung per E-Mail. Ist ein Camp voll, kommst du automatisch auf die Warteliste – wir melden uns, sobald ein Platz frei wird.</p>
+      <p><a href="/kids/land-der-gefuehle/"><strong>← Zurück zum Camp</strong></a></p>
+    </div>
+
+    <form class="form" data-booking-form data-kind="camp" novalidate>
+      <input type="hidden" name="source" value="web:kids-camp">
+      <input type="hidden" name="camp" value="land-der-gefuehle">
+      <div class="hp" aria-hidden="true"><label>Firma<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+
+      <fieldset>
+        <legend>Camp-Datum</legend>
+        <label class="field">Datum wählen
+          <select name="date" required data-camp-select>
+            <option value="">Bitte wählen</option>
+            {{camps:options:land-der-gefuehle}}
+          </select>
+        </label>
+        <div class="picked" data-picked hidden>
+          <div><strong data-picked-label></strong><br><span class="form-note" data-picked-meta></span></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Elternteil</legend>
+        <div class="row-2">
+          <label class="field">Vorname<input type="text" name="firstName" autocomplete="given-name" required></label>
+          <label class="field">Nachname<input type="text" name="lastName" autocomplete="family-name" required></label>
+        </div>
+        <label class="field">E-Mail<input type="email" name="email" autocomplete="email" required></label>
+        <label class="field">Mobile<input type="tel" name="phone" autocomplete="tel" placeholder="+41"></label>
+        <label class="field">Strasse <span class="hint">(optional)</span><input type="text" name="street" autocomplete="street-address"></label>
+        <div class="row-3">
+          <label class="field">Ort<input type="text" name="city" autocomplete="address-level2"></label>
+          <label class="field">PLZ<input type="text" name="zip" inputmode="numeric" autocomplete="postal-code"></label>
+        </div>
+      </fieldset>
+
+      <fieldset data-children>
+        <legend>Kind</legend>
+        <div class="child stack" style="gap:12px" data-child>
+          <div class="row-3">
+            <label class="field">Vorname des Kindes<input type="text" name="childName[]" required></label>
+            <label class="field">Alter<input type="number" name="childAge[]" min="3" max="16" inputmode="numeric"></label>
+          </div>
+          <label class="field">Allergien, Gesundheit, Hinweise <span class="hint">(optional)</span><textarea name="childNotes[]" rows="2"></textarea></label>
+        </div>
+        <button type="button" class="link-btn" data-add-child>+ Geschwisterkind anmelden</button>
+      </fieldset>
+
+      <label class="field">Mitteilung <span class="hint">(optional)</span><textarea name="message" rows="3"></textarea></label>
+
+      <div class="consent">
+        <label class="check"><input type="checkbox" name="agb" required><span>Ich akzeptiere die <a href="/agb/" target="_blank">AGB</a>.</span></label>
+        <label class="check"><input type="checkbox" name="privacy" required><span>Ich habe die <a href="/datenschutz/" target="_blank">Datenschutzerklärung</a> gelesen und bin einverstanden, dass meine Angaben zur Bearbeitung der Anmeldung gespeichert werden.</span></label>
+      </div>
+
+      <div class="form-status" data-form-status role="status" hidden></div>
+      <button class="btn" type="submit" style="min-height:54px; font-size:17px">Verbindlich anmelden</button>
+      <p class="form-note">Pflichtfelder: Datum, Name, E-Mail, Vorname des Kindes und die beiden Häkchen.</p>
+    </form>
+  </div>
+</section>

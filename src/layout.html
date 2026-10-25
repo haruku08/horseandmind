@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="robots" content="{{robots}}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_CH">
+<meta property="og:site_name" content="Horse &amp; Mind">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{site_url}}/assets/img/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<!-- Fonts: Google Fonts for now. Before go-live, self-host them (see README → Datenschutz). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Mulish:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css?v={{build_id}}">
+<script type="application/ld+json">{{jsonld}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/">HORSE&amp;MIND</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">Menü</button>
+    <nav class="nav" id="nav" aria-label="Hauptnavigation">
+      <a href="/ruhe-im-chaos/"{{nav_erwachsene}}>Erwachsene</a>
+      <a href="/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/"{{nav_kids}}>Kids</a>
+      <a href="/kids/land-der-gefuehle/"{{nav_camps}}>Camps</a>
+      <a href="/ueber-uns/"{{nav_ueber}}>Über mich</a>
+      <a class="btn" href="/termin/">Erstgespräch buchen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+{{content}}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="grid">
+      <div class="col">
+        <span class="logo">HORSE&amp;MIND</span>
+        <span>Manuela Pattynama<br>Hegifeldstrasse 6B<br>8404 Winterthur</span>
+      </div>
+      <div class="col">
+        <strong>Angebot</strong>
+        <a href="/pferdeunterstuetztes-coaching/">Pferdegestütztes Coaching</a>
+        <a href="/kids/land-der-gefuehle/">Kids Camps</a>
+        <a href="/kids/reitpaedagogik/">Reitpädagogik</a>
+        <a href="/wing-wave/">Wingwave</a>
+        <a href="/epigenetik/">Epigenetik</a>
+      </div>
+      <div class="col">
+        <strong>Horse &amp; Mind</strong>
+        <a href="/ueber-uns/">Über mich</a>
+        <a href="/ueber-uns/kursort-binzenloo-winterthur/">Kursort Binzenloo</a>
+        <a href="/ueber-uns/meine-partner/">Partner</a>
+        <a href="/kontakt/">Kontakt</a>
+        <a href="https://shop.spreadshirt.ch/horseandmind/" rel="noopener">Shop</a>
+      </div>
+      <div class="col">
+        <strong>Rechtliches</strong>
+        <a href="/impressum/">Impressum</a>
+        <a href="/datenschutz/">Datenschutz</a>
+        <a href="/agb/">AGB</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {{year}} Horse &amp; Mind</span>
+      <span class="social">
+        <a href="https://www.instagram.com/horseandmind" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/horseandmind.ch" rel="noopener">Facebook</a>
+      </span>
+    </div>
+  </div>
+</footer>
+<script>window.HM_CONFIG = {{config_json}};</script>
+<script src="/assets/js/site.js?v={{build_id}}" defer></script>
+</body>
+</html>

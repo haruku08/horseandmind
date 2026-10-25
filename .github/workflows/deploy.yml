@@ -1,0 +1,42 @@
+name: Build & deploy
+
+# Runs on every push to main (and by hand from the Actions tab).
+# Builds the site and uploads dist/ to the hosting via FTP.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build
+        run: node build.mjs
+
+      # Repository secrets (Settings → Secrets and variables → Actions):
+      #   FTP_SERVER    e.g. ftp.horseandmind.ch
+      #   FTP_USERNAME
+      #   FTP_PASSWORD
+      #   FTP_DIR       target folder ending in /, e.g. /staging/ first, later /public_html/ or /httpdocs/
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_DIR }}
+          local-dir: ./dist/
+          protocol: ftps
+          # Only uploads files that changed since the last deploy.
+          # Never deletes anything else on the server (e.g. the old WordPress) unless you set dangerous-clean-slate.
