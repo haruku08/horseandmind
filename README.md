@@ -94,6 +94,6 @@ If your host only offers plain FTP, change `protocol: ftps` to `ftp` in the work
 - [ ] Real photos in place, og-image added
 - [ ] Texts from the old pages carried over (pages marked "Inhalt folgt")
 - [ ] Impressum, Datenschutz and AGB completed and checked
-- [ ] Self-host the fonts instead of loading them from Google (recommended under Swiss/EU data protection). Download Cormorant Garamond and Mulish as WOFF2, put them in `src/assets/fonts/`, replace the Google `<link>` in `layout.html` with `@font-face` rules in `site.css`.
+- [ ] Self-host the fonts instead of loading them from Google (recommended under Swiss/EU data protection). Download Fraunces and Nunito as WOFF2, put them in `src/assets/fonts/`, replace the Google `<link>` in `layout.html` with `@font-face` rules in `site.css`.
 - [ ] Booking API connected (`apiBase`), test bookings for camp, appointment and contact
 - [ ] Upcoming camp dates entered in `camps.json`

@@ -19,7 +19,7 @@
 <!-- Fonts: Google Fonts for now. Before go-live, self-host them (see README → Datenschutz). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Mulish:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&amp;family=Nunito:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css?v={{build_id}}">
 <script type="application/ld+json">{{jsonld}}</script>
 </head>
@@ -27,13 +27,14 @@
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="logo" href="/">HORSE&amp;MIND</a>
+    <a class="logo" href="/">Horse <span>&amp;</span> Mind</a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">Menü</button>
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
-      <a href="/ruhe-im-chaos/"{{nav_erwachsene}}>Erwachsene</a>
-      <a href="/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/"{{nav_kids}}>Kids</a>
+      <a href="/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/"{{nav_kids}}>Für Kinder</a>
+      <a href="/ruhe-im-chaos/"{{nav_erwachsene}}>Für dich</a>
       <a href="/kids/land-der-gefuehle/"{{nav_camps}}>Camps</a>
       <a href="/ueber-uns/"{{nav_ueber}}>Über mich</a>
+      <a href="/kontakt/"{{nav_kontakt}}>Kontakt</a>
       <a class="btn" href="/termin/">Erstgespräch buchen</a>
     </nav>
   </div>
@@ -47,7 +48,7 @@
   <div class="wrap">
     <div class="grid">
       <div class="col">
-        <span class="logo">HORSE&amp;MIND</span>
+        <span class="logo">Horse <span>&amp;</span> Mind</span>
         <span>Manuela Pattynama<br>Hegifeldstrasse 6B<br>8404 Winterthur</span>
       </div>
       <div class="col">
@@ -63,7 +64,7 @@
         <a href="/ueber-uns/">Über mich</a>
         <a href="/ueber-uns/kursort-binzenloo-winterthur/">Kursort Binzenloo</a>
         <a href="/ueber-uns/meine-partner/">Partner</a>
-        <a href="/kontakt/">Kontakt</a>
+        <a href="/kontakt/"{{nav_kontakt}}>Kontakt</a>
         <a href="https://shop.spreadshirt.ch/horseandmind/" rel="noopener">Shop</a>
       </div>
       <div class="col">

@@ -183,7 +183,7 @@ for (const file of walk(pagesDir).filter((f) => f.endsWith('.html'))) {
   const rel = path.relative(pagesDir, path.dirname(file)).split(path.sep).join('/');
   const url = '/' + (rel ? rel + '/' : '');
   const content = renderTokens(raw.slice(m[0].length));
-  const navKeys = ['erwachsene', 'kids', 'camps', 'ueber'];
+  const navKeys = ['erwachsene', 'kids', 'camps', 'ueber', 'kontakt'];
   const vars = {
     title: esc(meta.title),
     description: esc(meta.description || ''),
