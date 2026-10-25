@@ -38,11 +38,13 @@ build.mjs                     builder: src/ → dist/  (`node build.mjs`, `npm r
 src/layout.html               header, nav, footer, meta
 src/pages/**/index.html       one page per folder; starts with <!--meta {...} -->
 src/data/camps.json           camp dates (past ones hide automatically, build + client side)
-src/data/site.json            apiBase (empty = forms in test mode), services list
+src/data/site.json            apiBase (empty = forms in test mode), services, address, venue, email, summary (feeds schema.org + llms.txt)
 src/assets/css|js|img         styles, site.js (nav, camp dates, forms, slot picker)
 src/static/                   .htaccess, robots.txt → site root
 .github/workflows/deploy.yml  build + FTP deploy on push to main
 ```
+
+Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). The build warns about pages that still contain `class="todo"` boxes and a missing og-image.
 
 Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}}`, `{{ph:Label|class}}`, `{{year}}`. Page meta keys: `title`, `description`, `nav` (erwachsene|kids|camps|ueber), `noindex`.
 
@@ -59,6 +61,10 @@ Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}
 ## Open to-dos
 
 - [ ] FTP secrets + staging subdomain; first deploy
+- [ ] Full crawl of the live site (blocked from the cloud sandbox on 25 Oct; allow `horseandmind.ch` in the environment's network settings) – list every live URL, plugin and tracking script, check all have a page or a 301
+- [ ] New `/kids/` hub page: copy is new – Manuela to review
+- [ ] Google Business Profile: check it exists and uses Hegifeldstrasse 6B (Google still shows Schlossackerstrasse 30 from somewhere)
+- [ ] After go-live: Google Search Console + Bing Webmaster Tools, submit sitemap, watch 404s
 - [ ] Real photos + `og-image.jpg` (1200×630)
 - [ ] Check the old site's real fonts/colors and align if needed
 - [ ] Carry over texts from old pages marked "Inhalt folgt" (Ruhe im Chaos, Kids, Reitpädagogik, Coaching, Wingwave, Epigenetik, Über uns, Kursort, Partner, AGB)
@@ -72,6 +78,9 @@ Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}
 - [ ] Go-live: back up WordPress (files + DB), switch FTP_DIR, test old URLs redirect
 
 ## Findings from the old site worth remembering
+
+- Review 25 Oct 2026 (via Google index; live site not reachable from the sandbox): indexed URLs include `/kids/` and `/kids/workshop/` – now a `/kids/` hub page and a 301 for the workshop. Official address confirmed: Hegifeldstrasse 6B, 8404 Winterthur. Public email: info@horseandmind.ch.
+- Searching "Manuela Pattynama Horse & Mind" finds nothing – weak entity signal for Google and AI assistants; the Über-mich page, Person schema and consistent name/address across profiles fix that.
 
 - Camp dates were stale (past dates still shown as "Warteliste") – hence automatic hiding.
 - Zoho "Lead Source" dropdown was visible to visitors – now a hidden `source` field.

@@ -18,6 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const src = path.join(root, 'src');
@@ -154,16 +155,102 @@ function copyDir(from, to) {
   }
 }
 
-const jsonld = JSON.stringify({
-  '@context': 'https://schema.org',
+// ---- structured data (schema.org) ----
+// One business entity, referenced by @id from every page, plus page-specific
+// parts: breadcrumbs everywhere, Person on /ueber-uns/, Event per upcoming camp.
+const BIZ_ID = site.siteUrl + '/#business';
+const PERSON_ID = site.siteUrl + '/ueber-uns/#manuela';
+const business = {
   '@type': 'LocalBusiness',
+  '@id': BIZ_ID,
   name: 'Horse & Mind',
   description: 'Pferdegestütztes Coaching für Kinder und Erwachsene in Winterthur',
-  url: site.siteUrl,
-  founder: { '@type': 'Person', name: 'Manuela Pattynama' },
-  address: { '@type': 'PostalAddress', streetAddress: 'Hegifeldstrasse 6B', postalCode: '8404', addressLocality: 'Winterthur', addressCountry: 'CH' },
-  sameAs: ['https://www.instagram.com/horseandmind', 'https://www.facebook.com/horseandmind.ch']
-});
+  url: site.siteUrl + '/',
+  ...(site.email ? { email: site.email } : {}),
+  image: site.siteUrl + '/assets/img/og-image.jpg',
+  founder: { '@id': PERSON_ID },
+  address: { '@type': 'PostalAddress', ...site.address },
+  areaServed: site.areaServed,
+  knowsAbout: ['Pferdegestütztes Coaching', 'Reitpädagogik', 'Wingwave', 'Epigenetik', 'Coaching für Kinder'],
+  sameAs: site.sameAs
+};
+const person = {
+  '@type': 'Person',
+  '@id': PERSON_ID,
+  name: 'Manuela Pattynama',
+  jobTitle: 'Coach für pferdegestütztes Coaching',
+  worksFor: { '@id': BIZ_ID },
+  url: site.siteUrl + '/ueber-uns/'
+};
+const venue = {
+  '@type': 'Place',
+  name: site.venue.name,
+  address: { '@type': 'PostalAddress', ...site.venue.address }
+};
+
+// Swiss UTC offset on a given day, e.g. "+02:00" in summer.
+function zurichOffset(isoDate) {
+  const name = new Intl.DateTimeFormat('en-US', { timeZone: site.timezone, timeZoneName: 'longOffset' })
+    .formatToParts(new Date(isoDate + 'T12:00:00Z')).find((p) => p.type === 'timeZoneName').value;
+  return name === 'GMT' ? '+00:00' : name.replace('GMT', '');
+}
+
+function campEvent(c, pageUrl) {
+  const days = Math.round((Date.parse(c.end) - Date.parse(c.start)) / 86400000) + 1;
+  const [from, to] = c.time.split(/[–-]/).map((t) => t.trim().replace('.', ':'));
+  const s = campState(c);
+  return {
+    '@type': 'Event',
+    name: `Kids Camp «${c.title}»`,
+    startDate: `${c.start}T${from}${zurichOffset(c.start)}`,
+    endDate: `${c.end}T${to}${zurichOffset(c.end)}`,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: venue,
+    organizer: { '@id': BIZ_ID },
+    image: site.siteUrl + '/assets/img/og-image.jpg',
+    description: `${c.season}, ${days} ${days === 1 ? 'Vormittag' : 'Vormittage'} mit Pferden, Kinder-Yoga und kreativen Übungen in Winterthur.`,
+    offers: {
+      '@type': 'Offer', price: c.price, priceCurrency: 'CHF', url: pageUrl,
+      availability: s.wait ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock'
+    }
+  };
+}
+
+function breadcrumbs(url, title) {
+  if (url === '/') return null;
+  const segs = url.split('/').filter(Boolean);
+  const items = [{ name: 'Startseite', url: '/' }];
+  let acc = '/';
+  segs.forEach((seg, i) => {
+    acc += seg + '/';
+    const known = pageTitles.get(acc);
+    if (i === segs.length - 1) items.push({ name: title, url: acc });
+    else if (known) items.push({ name: known, url: acc });
+  });
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: site.siteUrl + it.url }))
+  };
+}
+
+function jsonldFor(url, meta) {
+  const short = crumb(meta.title);
+  const graph = [business];
+  if (url === '/ueber-uns/') graph.push(person);
+  const bc = breadcrumbs(url, short);
+  if (bc) graph.push(bc);
+  const campId = url.match(/^\/kids\/([a-z0-9-]+)\/$/)?.[1];
+  if (campId) for (const c of upcoming.filter((x) => x.camp === campId)) graph.push(campEvent(c, site.siteUrl + url));
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+}
+
+// Last change of a page, from git (needs full history in CI: fetch-depth 0).
+function lastmod(file) {
+  try {
+    return execFileSync('git', ['log', '-1', '--format=%cs', '--', file], { cwd: root, encoding: 'utf8' }).trim() || null;
+  } catch { return null; }
+}
 
 const clientConfig = JSON.stringify({ apiBase: site.apiBase, services: site.services, timezone: site.timezone }).replace(/</g, '\\u003c');
 
@@ -174,15 +261,20 @@ copyDir(path.join(src, 'assets'), path.join(out, 'assets'));
 copyDir(path.join(src, 'static'), out);
 
 const pagesDir = path.join(src, 'pages');
-const urls = [];
-for (const file of walk(pagesDir).filter((f) => f.endsWith('.html'))) {
+const pages = walk(pagesDir).filter((f) => f.endsWith('.html')).map((file) => {
   const raw = fs.readFileSync(file, 'utf8');
   const m = raw.match(/^<!--meta\s+([\s\S]*?)-->\s*/);
   if (!m) throw new Error(`Missing <!--meta {...} --> in ${file}`);
-  const meta = JSON.parse(m[1]);
   const rel = path.relative(pagesDir, path.dirname(file)).split(path.sep).join('/');
-  const url = '/' + (rel ? rel + '/' : '');
-  const content = renderTokens(raw.slice(m[0].length));
+  return { file, raw, body: raw.slice(m[0].length), meta: JSON.parse(m[1]), rel, url: '/' + (rel ? rel + '/' : '') };
+});
+const crumb = (t) => t.split(' | ')[0].split(' – ')[0];
+const pageTitles = new Map(pages.map((p) => [p.url, crumb(p.meta.title)]));
+
+const indexed = [];
+const unfinished = [];
+for (const { file, body, meta, rel, url } of pages) {
+  const content = renderTokens(body);
   const navKeys = ['erwachsene', 'kids', 'camps', 'ueber'];
   const vars = {
     title: esc(meta.title),
@@ -192,7 +284,7 @@ for (const file of walk(pagesDir).filter((f) => f.endsWith('.html'))) {
     robots: meta.noindex ? 'noindex, follow' : 'index, follow',
     build_id: buildId,
     year: String(year),
-    jsonld,
+    jsonld: jsonldFor(url, meta),
     config_json: clientConfig,
     content
   };
@@ -201,11 +293,44 @@ for (const file of walk(pagesDir).filter((f) => f.endsWith('.html'))) {
   const dest = path.join(out, rel, 'index.html');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.writeFileSync(dest, html);
-  if (!meta.noindex) urls.push(url);
+  if (/class="todo"/.test(body)) unfinished.push(url);
+  if (!meta.noindex) indexed.push({ url, meta, lastmod: lastmod(file) });
 }
 
-urls.sort();
+indexed.sort((a, b) => a.url.localeCompare(b.url));
 fs.writeFileSync(path.join(out, 'sitemap.xml'),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${site.siteUrl}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${indexed.map((p) => `  <url><loc>${site.siteUrl}${p.url}</loc>${p.lastmod ? `<lastmod>${p.lastmod}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`);
 
-console.log(`Built ${urls.length} indexed pages (+ noindex pages) into dist/ · upcoming camps: ${upcoming.length} · today ${today}`);
+// llms.txt: a plain summary for AI assistants and answer engines (llmstxt.org).
+const llmsGroups = [
+  ['Angebot', (u) => !/^\/(ueber-uns|kontakt|termin|impressum|datenschutz|agb)\//.test(u) && u !== '/'],
+  ['Über Horse & Mind', (u) => /^\/(ueber-uns|kontakt|termin)\//.test(u)],
+  ['Rechtliches', (u) => /^\/(impressum|datenschutz|agb)\//.test(u)]
+];
+const campLines = upcoming.map((c) => `- ${c.title}: ${formatRange(c.start, c.end)}, ${c.time} Uhr, CHF ${c.price} (${campState(c).chip})`);
+const llms = [
+  '# Horse & Mind',
+  '',
+  `> ${site.summary}`,
+  '',
+  `- Inhaberin: Manuela Pattynama`,
+  `- Adresse: ${site.address.streetAddress}, ${site.address.postalCode} ${site.address.addressLocality}`,
+  `- Kursort: ${site.venue.name}, ${site.venue.address.streetAddress}, ${site.venue.address.postalCode} ${site.venue.address.addressLocality}`,
+  ...(site.email ? [`- E-Mail: ${site.email}`] : []),
+  `- Erstgespräch online buchen: ${site.siteUrl}/termin/`,
+  '',
+  '## Nächste Kids Camps',
+  '',
+  ...(campLines.length ? campLines : ['- Neue Daten folgen bald. Interesse melden: ' + site.siteUrl + '/kids/land-der-gefuehle/']),
+  '',
+  ...llmsGroups.flatMap(([h, test]) => {
+    const list = indexed.filter((p) => test(p.url));
+    return list.length ? [`## ${h}`, '', ...list.map((p) => `- [${p.meta.title.split(' | ')[0]}](${site.siteUrl}${p.url}): ${p.meta.description || ''}`), ''] : [];
+  })
+].join('\n');
+fs.writeFileSync(path.join(out, 'llms.txt'), llms);
+
+if (!fs.existsSync(path.join(src, 'assets/img/og-image.jpg'))) console.warn('⚠ Missing src/assets/img/og-image.jpg (social preview image, 1200×630).');
+if (unfinished.length) console.warn(`⚠ ${unfinished.length} pages still contain "Inhalt folgt"/todo boxes:\n  ${unfinished.join('\n  ')}`);
+
+console.log(`Built ${indexed.length} indexed pages (+ noindex pages) into dist/ · upcoming camps: ${upcoming.length} · today ${today}`);
