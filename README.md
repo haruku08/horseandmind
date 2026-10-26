@@ -55,16 +55,27 @@ Every push to `main` on GitHub builds the site and uploads it automatically (`.g
 
 ## Images
 
-All photos are placeholders for now (`{{ph:Label}}` in the pages). To put a real photo in:
+Every photo spot shows a placeholder until its photo exists. To add one:
 
-1. Save it in `src/assets/img/` – export as JPG or WebP, max. 2000 px wide, ideally under 300 KB.
-2. Replace the placeholder, e.g. `{{ph:Kinder mit Pferden|tall}}`, with:
+1. Export it as JPG or WebP, max. 2000 px wide, ideally under 300 KB.
+2. Name it after the placeholder label and put it in `src/assets/img/photos/`:
+   `hero-herbst-2023`, `manuela-portrait`, `coaching`, `coaching-erwachsene`, `erwachsene`, `kids-einzelbegleitung`, `kind-mit-pferd`, `kinder-mit-pferden`, `kids-camp`, `reitpaedagogik`, `wingwave`, `epigenetik`, `binzenloo` (e.g. `binzenloo.jpg`).
+3. Adjust its alt text in `src/data/photos.json` so it describes what the photo shows.
 
-```html
-<figure class="photo"><img src="/assets/img/kinder-pferde.jpg" alt="Kinder führen ein Pferd über die Wiese" width="1600" height="1200" loading="lazy"></figure>
-```
+The build lists every slot that is still empty. `src/assets/img/og-image.jpg` (1200 × 630) is the preview picture on WhatsApp and Facebook – a text-only version for now; swap in a photo version later.
 
-Use `loading="lazy"` everywhere except the hero image on the homepage. Also add `src/assets/img/og-image.jpg` (1200 × 630) – it's the preview picture when the site is shared on WhatsApp or Facebook.
+## Missing facts
+
+Unknown facts (prices, durations, legal details) are written as `[IN GROSSBUCHSTABEN]` in the pages. They show highlighted on the site, and the build lists them all. Replace each before go-live.
+
+## Staging and production
+
+The deploy needs the repository variable `SITE_ENV` (Settings → Secrets and variables → Actions → Variables):
+
+- `staging` – every page is `noindex`, `robots.txt` blocks all crawlers. Use while `FTP_DIR` points to the staging folder.
+- `production` – set together with `FTP_DIR` = live folder at go-live.
+
+Without it the deploy stops. Local builds default to non-production (`SITE_ENV=production node build.mjs` to test the live version).
 
 ## Forms and booking
 
@@ -76,7 +87,7 @@ Three forms send their data as JSON to the booking API set in `src/data/site.jso
 | 1:1 appointment | `/termin/` | `GET {apiBase}/slots?service=…&days=21`, `POST {apiBase}/bookings/appointment` |
 | Contact | `/kontakt/` | `POST {apiBase}/contact` |
 
-While `apiBase` is empty, forms show a "Testversion – nicht verbunden" notice and send nothing, and the appointment page links to the existing Calendly. Each form has a hidden spam trap (`company` field) and a `source` field (`web:kids-camp`, `web:termin`, `web:kontakt`).
+While `apiBase` is empty, the contact and camp forms post to the **Zoho CRM webform**, configured in `site.json` → `zoho` (copy `action` and the hidden inputs `xnQsjsdp`, `xmIwtLD`, `actionType` … from the old site's form HTML). Name, email, phone and address go to Zoho's fields; everything else (camp date, children, consents, message) goes into `Description`. Zoho then sends the visitor to `/danke/`. With no `action` set, a form tells the visitor to write to info@horseandmind.ch. The appointment page links to Calendly. Each form has a hidden spam trap (`company` field) and a `source` field (`web:kids-camp`, `web:termin`, `web:kontakt`).
 
 The slots endpoint answers with `{ "days": [ { "date": "2026-11-02", "slots": ["09:00", "10:30"] } ] }`.
 
@@ -91,9 +102,11 @@ If your host only offers plain FTP, change `protocol: ftps` to `ftp` in the work
 
 ## Before go-live
 
-- [ ] Real photos in place, og-image added
-- [ ] Texts from the old pages carried over (pages marked "Inhalt folgt")
-- [ ] Impressum, Datenschutz and AGB completed and checked
-- [ ] Self-host the fonts instead of loading them from Google (recommended under Swiss/EU data protection). Download Cormorant Garamond and Mulish as WOFF2, put them in `src/assets/fonts/`, replace the Google `<link>` in `layout.html` with `@font-face` rules in `site.css`.
-- [ ] Booking API connected (`apiBase`), test bookings for camp, appointment and contact
+- [ ] Real photos in place (build lists empty slots); photo version of `og-image.jpg`
+- [ ] All `[PLACEHOLDER]` facts and "Inhalt folgt" boxes resolved (build lists them)
+- [ ] Impressum, Datenschutz and AGB completed and legally checked
+- [x] Fonts self-hosted (`src/assets/fonts/`)
+- [ ] Zoho webform keys in `site.json` → `zoho`; test a contact and a camp sign-up end to end
 - [ ] Upcoming camp dates entered in `camps.json`
+- [ ] `SITE_ENV=production` and `FTP_DIR` = live folder; back up WordPress first
+- [ ] After go-live: test old URLs (see `.htaccess`), Google Search Console + Bing, submit sitemap

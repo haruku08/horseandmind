@@ -23,8 +23,20 @@ jobs:
         with:
           node-version: 22
 
+      # Repository variable SITE_ENV (Settings → Secrets and variables → Actions → Variables):
+      #   staging     → every page noindex, robots.txt blocks crawlers (use while FTP_DIR points to staging)
+      #   production  → indexable; set this together with FTP_DIR = live folder at go-live
+      - name: Check SITE_ENV
+        run: |
+          case "${{ vars.SITE_ENV }}" in
+            staging|production) echo "Building for ${{ vars.SITE_ENV }}" ;;
+            *) echo "::error::Set the repository variable SITE_ENV to 'staging' or 'production' first."; exit 1 ;;
+          esac
+
       - name: Build
         run: node build.mjs
+        env:
+          SITE_ENV: ${{ vars.SITE_ENV }}
 
       # Repository secrets (Settings → Secrets and variables → Actions):
       #   FTP_SERVER    e.g. ftp.horseandmind.ch

@@ -109,6 +109,54 @@
     box.textContent = text;
   }
 
+  /* Until our own booking API exists: post the form to the Zoho CRM webform (site.json → zoho).
+     Fields Zoho has no slot for are written into its description field, so nothing gets lost. */
+  var LABELS = {
+    date: 'Camp-Datum', camp: 'Camp', interest: 'Interesse', message: 'Nachricht', source: 'Quelle',
+    street: 'Strasse', zip: 'PLZ', city: 'Ort', phone: 'Mobile', privacy: 'Datenschutz akzeptiert', agb: 'AGB akzeptiert'
+  };
+  function sendToZoho(form, kind, data) {
+    var z = (CFG.zoho || {})[kind];
+    if (!z || !z.action) return false;
+    var map = z.fields || {};
+    var post = document.createElement('form');
+    post.method = 'POST';
+    post.action = z.action;
+    post.acceptCharset = 'UTF-8';
+    post.hidden = true;
+    function add(name, value) {
+      var input = document.createElement('input');
+      input.type = 'hidden'; input.name = name; input.value = value;
+      post.appendChild(input);
+    }
+    Object.keys(z.hidden || {}).forEach(function (k) { add(k, z.hidden[k]); });
+
+    // Human-readable camp date instead of the internal id
+    var sel = form.querySelector('[data-camp-select]');
+    if (sel && sel.value) {
+      var o = sel.options[sel.selectedIndex];
+      data.date = (o.getAttribute('data-label') || o.textContent) + (o.getAttribute('data-wait') === '1' ? ' (Warteliste)' : '');
+    }
+    var lines = [];
+    Object.keys(data).forEach(function (k) {
+      var v = data[k];
+      if (k === 'children') {
+        v.forEach(function (c, i) {
+          lines.push('Kind ' + (i + 1) + ': ' + c.name + (c.age ? ', ' + c.age + ' Jahre' : '') + (c.notes ? ' – ' + c.notes : ''));
+        });
+        return;
+      }
+      if (v === 'on') v = 'ja';
+      if (map[k]) add(map[k], v);
+      else if (v !== '') lines.push((LABELS[k] || k) + ': ' + v);
+    });
+    if (z.descriptionField) add(z.descriptionField, lines.join('\n'));
+    document.body.appendChild(post);
+    showStatus(form, true, 'Wird gesendet …');
+    post.submit();
+    return true;
+  }
+
   $all('[data-booking-form]').forEach(function (form) {
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -121,7 +169,8 @@
       if (data.company) { showStatus(form, true, OK_TEXT[kind]); return; } // honeypot: pretend success
       delete data.company;
       if (!API) {
-        showStatus(form, false, 'Testversion: Das Formular ist noch nicht mit der Buchung verbunden. Es wurde nichts gesendet.');
+        if (sendToZoho(form, kind, data)) return;
+        showStatus(form, false, 'Das Formular ist noch nicht verbunden. Bitte schreib mir direkt an ' + (CFG.email || 'info@horseandmind.ch') + '.');
         return;
       }
       var btn = $('button[type="submit"]', form);

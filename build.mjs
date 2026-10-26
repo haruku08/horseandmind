@@ -28,6 +28,11 @@ const site = JSON.parse(fs.readFileSync(path.join(src, 'data/site.json'), 'utf8'
 const { camps } = JSON.parse(fs.readFileSync(path.join(src, 'data/camps.json'), 'utf8'));
 const layout = fs.readFileSync(path.join(src, 'layout.html'), 'utf8');
 const buildId = Date.now().toString(36);
+
+// SITE_ENV=production → indexable. Anything else (staging, local) → noindex everywhere,
+// robots.txt blocks all crawlers and Apache sends X-Robots-Tag, so test copies never land in Google.
+const ENV = process.env.SITE_ENV || 'development';
+const PROD = ENV === 'production';
 const year = new Date().getFullYear();
 
 // "Today" in Swiss time, as YYYY-MM-DD, so a camp disappears the day after it ends.
@@ -125,10 +130,31 @@ function campOptions(campId) {
   return opts.join('\n');
 }
 
+// Photo slots: {{ph:Label|class}} shows a placeholder until a photo named after the label
+// exists in src/assets/img/photos/ (e.g. "Kinder mit Pferden" → kinder-mit-pferden.jpg).
+// Alt texts come from src/data/photos.json (falls back to the label).
+const PHOTO_DIR = path.join(src, 'assets/img/photos');
+const photoAlts = fs.existsSync(path.join(src, 'data/photos.json')) ? JSON.parse(fs.readFileSync(path.join(src, 'data/photos.json'), 'utf8')) : {};
+const slug = (t) => t.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const missingPhotos = new Set();
+let photoIndex = 0; // reset per page; the first image on a page loads eagerly (it's above the fold)
+
 function placeholder(arg) {
   const [label, cls] = arg.split('|');
+  const name = slug(label);
+  const file = ['webp', 'jpg', 'jpeg', 'png'].map((ext) => `${name}.${ext}`).find((f) => fs.existsSync(path.join(PHOTO_DIR, f)));
+  const first = photoIndex++ === 0;
+  if (file) {
+    const alt = photoAlts[name] || label;
+    const load = first ? 'fetchpriority="high"' : 'loading="lazy"';
+    return `<figure class="ph has-photo${cls ? ' ' + cls : ''}"><img src="/assets/img/photos/${file}" alt="${esc(alt)}" ${load} decoding="async"></figure>`;
+  }
+  missingPhotos.add(name);
   return `<div class="ph${cls ? ' ' + cls : ''}" role="img" aria-label="Foto folgt: ${esc(label)}"><span class="ph-label" aria-hidden="true">Foto: ${esc(label)}</span></div>`;
 }
+
+// [PLACEHOLDER] text (facts we don't know yet) gets highlighted and reported by the build.
+const TBD = /\[([A-ZÄÖÜ]{3}[^\]\n<>"]*)\]/g;
 
 function renderTokens(html) {
   return html
@@ -136,7 +162,16 @@ function renderTokens(html) {
     .replace(/\{\{camps:band\}\}/g, () => campBand())
     .replace(/\{\{camps:options(?::([a-z0-9-]+))?\}\}/g, (_, id) => campOptions(id))
     .replace(/\{\{ph:([^}]+)\}\}/g, (_, a) => placeholder(a))
-    .replace(/\{\{year\}\}/g, String(year));
+    .replace(/\{\{year\}\}/g, String(year))
+    .replace(TBD, (all) => `<span class="tbd">${all}</span>`);
+}
+
+// FAQ blocks (<details class="faq"><summary>Q</summary><div class="faq-a">A</div></details>) → FAQPage schema
+function faqsIn(html) {
+  const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
+  return [...html.matchAll(/<details class="faq">\s*<summary>([\s\S]*?)<\/summary>\s*<div class="faq-a">([\s\S]*?)<\/div>\s*<\/details>/g)]
+    .map((m) => ({ q: text(m[1]), a: text(m[2]) }));
 }
 
 function walk(dir) {
@@ -234,14 +269,18 @@ function breadcrumbs(url, title) {
   };
 }
 
-function jsonldFor(url, meta) {
+function jsonldFor(url, meta, faqs) {
   const short = crumb(meta.title);
   const graph = [business];
   if (url === '/ueber-uns/') graph.push(person);
-  const bc = breadcrumbs(url, short);
+  const bc = meta.noindex ? null : breadcrumbs(url, short);
   if (bc) graph.push(bc);
   const campId = url.match(/^\/kids\/([a-z0-9-]+)\/$/)?.[1];
   if (campId) for (const c of upcoming.filter((x) => x.camp === campId)) graph.push(campEvent(c, site.siteUrl + url));
+  if (faqs.length) graph.push({
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+  });
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 }
 
@@ -252,7 +291,7 @@ function lastmod(file) {
   } catch { return null; }
 }
 
-const clientConfig = JSON.stringify({ apiBase: site.apiBase, services: site.services, timezone: site.timezone }).replace(/</g, '\\u003c');
+const clientConfig = JSON.stringify({ apiBase: site.apiBase, services: site.services, timezone: site.timezone, email: site.email, zoho: site.zoho }).replace(/</g, '\\u003c');
 
 // ---- build ----
 fs.rmSync(out, { recursive: true, force: true });
@@ -273,18 +312,21 @@ const pageTitles = new Map(pages.map((p) => [p.url, crumb(p.meta.title)]));
 
 const indexed = [];
 const unfinished = [];
+const tbd = [];
 for (const { file, body, meta, rel, url } of pages) {
+  photoIndex = 0;
   const content = renderTokens(body);
+  const faqs = faqsIn(content);
   const navKeys = ['erwachsene', 'kids', 'camps', 'ueber'];
   const vars = {
     title: esc(meta.title),
     description: esc(meta.description || ''),
     canonical: site.siteUrl + url,
     site_url: site.siteUrl,
-    robots: meta.noindex ? 'noindex, follow' : 'index, follow',
+    robots: !PROD ? 'noindex, nofollow' : meta.noindex ? 'noindex, follow' : 'index, follow',
     build_id: buildId,
     year: String(year),
-    jsonld: jsonldFor(url, meta),
+    jsonld: jsonldFor(url, meta, faqs),
     config_json: clientConfig,
     content
   };
@@ -294,6 +336,7 @@ for (const { file, body, meta, rel, url } of pages) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.writeFileSync(dest, html);
   if (/class="todo"/.test(body)) unfinished.push(url);
+  for (const m of body.matchAll(TBD)) tbd.push(`${url} ${m[0]}`);
   if (!meta.noindex) indexed.push({ url, meta, lastmod: lastmod(file) });
 }
 
@@ -330,7 +373,14 @@ const llms = [
 ].join('\n');
 fs.writeFileSync(path.join(out, 'llms.txt'), llms);
 
+if (!PROD) {
+  fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+  fs.appendFileSync(path.join(out, '.htaccess'), '\n# Not production: keep this copy out of search engines\n<IfModule mod_headers.c>\n  Header always set X-Robots-Tag "noindex, nofollow"\n</IfModule>\n');
+}
+
 if (!fs.existsSync(path.join(src, 'assets/img/og-image.jpg'))) console.warn('⚠ Missing src/assets/img/og-image.jpg (social preview image, 1200×630).');
 if (unfinished.length) console.warn(`⚠ ${unfinished.length} pages still contain "Inhalt folgt"/todo boxes:\n  ${unfinished.join('\n  ')}`);
 
-console.log(`Built ${indexed.length} indexed pages (+ noindex pages) into dist/ · upcoming camps: ${upcoming.length} · today ${today}`);
+if (tbd.length) console.warn(`⚠ ${tbd.length} [PLACEHOLDER] facts still open:\n  ${tbd.join('\n  ')}`);
+if (missingPhotos.size) console.warn(`⚠ ${missingPhotos.size} photo slots still empty (put files in src/assets/img/photos/): ${[...missingPhotos].join(', ')}`);
+console.log(`[${ENV}${PROD ? '' : ' – noindex, robots blocked'}] Built ${indexed.length} indexed pages (+ noindex pages) into dist/ · upcoming camps: ${upcoming.length} · today ${today}`);

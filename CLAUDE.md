@@ -5,7 +5,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 ## Where we are (as of 25 Oct 2026)
 
 - Old site: WordPress 7.1 with a page builder, Bookly booking plugin, Calendly for the Erstgespräch, and HTML webforms posting to **Zoho CRM (free edition)**. Still live; untouched.
-- New site: **static HTML** in this repo, built by `build.mjs` (Node, no dependencies – the dev environment had no npm access, so keep it dependency-free). First commit pushed; not deployed yet.
+- New site: **static HTML** in this repo, built by `build.mjs` (Node, no dependencies – keep it dependency-free). All pages have content (written 26 Oct from facts found via Google's index of the old site – Manuela to review); remaining gaps are `[PLACEHOLDER]`s and a few todo boxes, both listed by the build. Not deployed yet.
 - A design proposal canvas exists in claude.ai ("Horse & Mind Redesign"): homepage, camp page, camp sign-up on phone, 1:1 slot picker, mini-CRM inbox.
 
 ## Decisions made
@@ -21,6 +21,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
    - Backend idea: **Supabase (EU region, Frankfurt)** for DB, auth and edge functions (Supabase is connected in claude.ai), or Cloudflare Workers. Secrets (Google, DB) must never be in the static site.
    - Confirmation/reminder emails via a sending service (e.g. Resend).
    - Not decided yet: payments online or not.
+   - **Until our backend exists ("website only" phase):** contact and camp forms post to the existing **Zoho CRM webform** (`site.json` → `zoho`, keys still to copy from the old site), Erstgespräch via Calendly. Zoho redirects to `/danke/`.
 6. **Zoho migration (later):** owner will export Leads/Contacts as CSV and explain which misused field means what. Plan: map fields, dedupe by email, link parents/children, keep Zoho ID, dry run with report, then import; run both systems in parallel 1–2 weeks.
 
 ## Options considered and set aside
@@ -38,13 +39,14 @@ build.mjs                     builder: src/ → dist/  (`node build.mjs`, `npm r
 src/layout.html               header, nav, footer, meta
 src/pages/**/index.html       one page per folder; starts with <!--meta {...} -->
 src/data/camps.json           camp dates (past ones hide automatically, build + client side)
-src/data/site.json            apiBase (empty = forms in test mode), services, address, venue, email, summary (feeds schema.org + llms.txt)
-src/assets/css|js|img         styles, site.js (nav, camp dates, forms, slot picker)
+src/data/site.json            apiBase, zoho webform bridge, services, address, venue, email, summary (feeds schema.org + llms.txt)
+src/data/photos.json          alt texts for photos in src/assets/img/photos/ (file name = slot label slug)
+src/assets/css|js|img|fonts   styles, site.js (nav, camp dates, forms, Zoho bridge, slot picker), self-hosted fonts
 src/static/                   .htaccess, robots.txt → site root
 .github/workflows/deploy.yml  build + FTP deploy on push to main
 ```
 
-Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). The build warns about pages that still contain `class="todo"` boxes and a missing og-image.
+Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). FAQ blocks (`<details class="faq"><summary>…</summary><div class="faq-a">…</div></details>`) become FAQPage schema. `[ALL CAPS]` placeholders are highlighted on the page. The build warns about todo boxes, placeholders and empty photo slots. `SITE_ENV=production` makes the site indexable; anything else = noindex + robots block (deploy requires the repo variable `SITE_ENV`).
 
 Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}}`, `{{ph:Label|class}}`, `{{year}}`. Page meta keys: `title`, `description`, `nav` (erwachsene|kids|camps|ueber), `noindex`.
 
@@ -56,28 +58,31 @@ Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}
 - `POST {apiBase}/contact` – contact form.
 - Responses: 2xx with optional `{message}`; errors with `{error}` (German, shown to user).
 - Every form has a honeypot field `company` (must be empty) and `source` (`web:kids-camp`, `web:termin`, `web:kontakt`).
-- While `apiBase` is empty: forms show a "Testversion" notice; `/termin/` shows a Calendly fallback.
+- While `apiBase` is empty: forms post to Zoho if `site.json → zoho.<form>.action` is set, otherwise they ask the visitor to email; `/termin/` shows a Calendly fallback.
 
 ## Open to-dos
 
-- [ ] FTP secrets + staging subdomain; first deploy
-- [ ] Full crawl of the live site (blocked from the cloud sandbox on 25 Oct; allow `horseandmind.ch` in the environment's network settings) – list every live URL, plugin and tracking script, check all have a page or a 301
-- [ ] New `/kids/` hub page: copy is new – Manuela to review
-- [ ] Google Business Profile: check it exists and uses Hegifeldstrasse 6B (Google still shows Schlossackerstrasse 30 from somewhere)
-- [ ] After go-live: Google Search Console + Bing Webmaster Tools, submit sitemap, watch 404s
-- [ ] Real photos + `og-image.jpg` (1200×630)
-- [ ] Check the old site's real fonts/colors and align if needed
-- [ ] Carry over texts from old pages marked "Inhalt folgt" (Ruhe im Chaos, Kids, Reitpädagogik, Coaching, Wingwave, Epigenetik, Über uns, Kursort, Partner, AGB)
-- [ ] Impressum + Datenschutz: fill placeholders ([E-MAIL], [TELEFON], providers), legal check (Swiss nDSG; children's data and health notes are stored)
-- [ ] Self-host fonts before go-live
+Website:
+- [ ] Manuela reviews all page texts (written from Google-index facts, some of them possibly outdated: group of 4 in Reitpädagogik, 30/60-min kids intro, free phone Erstgespräch, KKP®-Trainerin, Verband membership, Parelli since 2014). Generic copy to check: FAQ answers, "Was du mitbringen solltest" on Kursort, /kids/ hub, AGB draft (sections 6–8 are suggestions)
+- [ ] Fill `[PLACEHOLDER]`s: prices (old site showed CHF 45/90 min, 90, 110, 140 – conflicting, so none used), Reitpädagogik day/time/duration, Wingwave duration, sessions in the intensive coaching, UID, photo credits, hosting provider, Zoho data centre, AGB payment/cancellation terms
+- [ ] Todo boxes: horses (names, photos), Kursort parking/ÖV, partner logos + links
+- [ ] Real photos (13 slots, file names in README) + photo og-image
+- [ ] Zoho webform keys into `site.json` → `zoho` (from the old site's form HTML), test both forms
+- [ ] Full crawl of the live site (blocked from the cloud sandbox; allow `horseandmind.ch` in the environment's network settings) – remaining old URLs, plugins, tracking; real fonts/colors
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
-- [ ] Durations for Coaching / Reitpädagogik in `site.json` (only Erstgespräch = 30 min is known)
+- [ ] Legal check of Impressum, Datenschutz, AGB (Swiss nDSG; children's data and health notes)
+- [ ] Google Business Profile with Hegifeldstrasse 6B
+- [ ] Deploy: FTP secrets, repo variable `SITE_ENV=staging`, staging subdomain; go-live = back up WordPress, `SITE_ENV=production` + live `FTP_DIR`, test redirects, Search Console + Bing
+
+Later (backend):
+- [ ] Durations for Coaching / Reitpädagogik in `site.json` services
 - [ ] Booking backend (Supabase or Workers) + Google Calendar + emails
 - [ ] Mini-CRM admin page
 - [ ] Zoho CSV import
-- [ ] Go-live: back up WordPress (files + DB), switch FTP_DIR, test old URLs redirect
 
 ## Findings from the old site worth remembering
+
+- 26 Oct 2026: «Ruhe im Chaos» is for **parents of neurodivergent children** (ADHS, ASS), a 3-month intensive with Epigenetik, Selbstliebe, Kommunikation – not a general adult offer. "Erwachsene" nav now goes to /pferdeunterstuetztes-coaching/ (hub). More old URLs found and redirected (see `.htaccess`), incl. Bookly pages under /buchung/ (→ /termin/, except our camp sign-up). Old phone on the site: +41 76 507 78 37.
 
 - Review 25 Oct 2026 (via Google index; live site not reachable from the sandbox): indexed URLs include `/kids/` and `/kids/workshop/` – now a `/kids/` hub page and a 301 for the workshop. Official address confirmed: Hegifeldstrasse 6B, 8404 Winterthur. Public email: info@horseandmind.ch.
 - Searching "Manuela Pattynama Horse & Mind" finds nothing – weak entity signal for Google and AI assistants; the Über-mich page, Person schema and consistent name/address across profiles fix that.

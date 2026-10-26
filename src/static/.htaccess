@@ -7,17 +7,34 @@ RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Old WordPress URLs → new pages (keeps Google rankings and old links working)
+# Old WordPress URLs → new pages (keeps Google rankings and old links working).
+# Found via Google's index on 25 Oct 2026; complete the list after a full crawl of the old site.
 Redirect 301 /kids-mini-camp/ /kids/land-der-gefuehle/
 Redirect 301 /kids/workshop/ /kids/
+Redirect 301 /manuela-pattynama/ /ueber-uns/
+Redirect 301 /ueber-uns/unsere-pferde/ /ueber-uns/
+Redirect 301 /pferdegestuetztes-coaching-2/ /pferdeunterstuetztes-coaching/
+Redirect 301 /pferdeunterstuetztes-coaching/erwachsene/ /pferdeunterstuetztes-coaching/
+Redirect 301 /pferdeunterstuetztes-coaching/intensiv-coaching/ /ruhe-im-chaos/
+Redirect 301 /pferdegestuetztes-coaching-winterthur/kinder-jugendliche-intensiv-coaching/ /kids/in-der-ruhe-liegt-die-kraft-mit-pferden/
+Redirect 301 /pferdegestuetztes-coaching-winterthur/wieherndes-klassenzimmer/ /kids/
+RedirectMatch 301 ^/pferdegestuetztes-coaching-winterthur/?$ /pferdeunterstuetztes-coaching/
 Redirect 301 /privacy-policy/ /datenschutz/
 Redirect 301 /wp-admin /
 Redirect 301 /wp-login.php /
 RedirectMatch 301 ^/feed/?$ /
 RedirectMatch 301 ^/category/.*$ /
 RedirectMatch 301 ^/tag/.*$ /
+RedirectMatch 301 ^/page_category/.*$ /
+# Old Bookly booking pages (/buchung/…) → appointment page; our own camp sign-up lives at /buchung/land-der-gefuehle/
+RewriteCond %{REQUEST_URI} !^/buchung/land-der-gefuehle/
+RewriteRule ^buchung/ /termin/ [R=301,L]
 
 ErrorDocument 404 /404/index.html
+
+AddType font/woff2 .woff2
+AddType text/plain .txt
+AddDefaultCharset utf-8
 
 # Security headers
 <IfModule mod_headers.c>
@@ -43,6 +60,7 @@ ErrorDocument 404 /404/index.html
   ExpiresByType image/webp "access plus 1 month"
   ExpiresByType image/png "access plus 1 month"
   ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
 
 Options -Indexes

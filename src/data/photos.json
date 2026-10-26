@@ -1,0 +1,16 @@
+{
+  "_help": "Alt texts for photos in src/assets/img/photos/. Key = file name without extension (the slot label in lower case, umlauts as ae/oe/ue, spaces as -). Describe what the actual photo shows.",
+  "hero-herbst-2023": "Manuela mit einem Pferd auf der Herbstweide in Winterthur",
+  "manuela-portrait": "Manuela Pattynama, Gründerin von Horse & Mind",
+  "coaching": "Pferdegestütztes Coaching am Boden auf dem Biohof Binzenloo",
+  "coaching-erwachsene": "Eine Frau steht ruhig neben einem Pferd auf der Weide",
+  "erwachsene": "Coaching für Erwachsene mit Pferd",
+  "kids-einzelbegleitung": "Ein Kind streichelt ein Pferd",
+  "kind-mit-pferd": "Ein Kind führt ein Pferd am Strick",
+  "kinder-mit-pferden": "Kinder mit Pferden auf dem Biohof Binzenloo",
+  "kids-camp": "Kinder im Kids Camp «Das Land der Gefühle»",
+  "reitpaedagogik": "Ein Kind sitzt auf einem Pferd, Manuela führt",
+  "wingwave": "Wingwave-Coaching",
+  "epigenetik": "Natur rund um den Biohof Binzenloo",
+  "binzenloo": "Der Biohof Binzenloo bei Winterthur"
+}

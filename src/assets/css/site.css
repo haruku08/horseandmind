@@ -1,6 +1,14 @@
 /* Horse & Mind – site styles
    Colors and radii are defined once here. Change a token, the whole site follows. */
 
+/* Fonts are self-hosted (no requests to Google → nDSG-friendly). Files: /assets/fonts, SIL Open Font License. */
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("/assets/fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 500; font-display: swap; src: url("/assets/fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2"); }
+@font-face { font-family: "Mulish"; font-style: normal; font-weight: 400; font-display: swap; src: url("/assets/fonts/mulish-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Mulish"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/mulish-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Mulish"; font-style: normal; font-weight: 700; font-display: swap; src: url("/assets/fonts/mulish-latin-700-normal.woff2") format("woff2"); }
+
 :root {
   --ground: #F6F1E9;      /* page background, warm cream */
   --surface: #FFFDF9;     /* cards, forms */
@@ -129,6 +137,28 @@ p { margin: 0; }
 @media (max-width: 640px) { .ph.tall { min-height: 300px; } }
 .photo { border-radius: var(--r-xl); overflow: hidden; margin: 0; }
 .photo img { width: 100%; height: 100%; object-fit: cover; }
+/* A placeholder slot with its real photo dropped in (same size as the placeholder) */
+.ph.has-photo::before { content: none; }
+.ph.has-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
+.faq { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+.faq summary { cursor: pointer; list-style: none; padding: 18px 52px 18px 22px; font-weight: 700; color: var(--ink); position: relative; min-height: 44px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); font-size: 22px; color: var(--accent); }
+.faq[open] summary::after { content: "–"; }
+.faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-md); }
+.faq .faq-a { padding: 0 22px 20px; color: var(--ink-2); display: flex; flex-direction: column; gap: 10px; }
+
+/* Facts list (key data of an offer) */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 0; }
+.facts div { background: var(--sand); border-radius: var(--r-md); padding: 16px 18px; }
+.facts dt { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--sage); }
+.facts dd { margin: 4px 0 0; color: var(--ink); font-weight: 600; }
+
+/* Text placeholders like [PREIS] – visible on staging so nobody misses them */
+.tbd { background: #F3E3CF; color: var(--accent-dark); border-radius: 4px; padding: 0 4px; }
 
 /* Hero */
 .hero { position: relative; border-radius: var(--r-xl); overflow: hidden; min-height: 560px; display: flex; align-items: flex-end; }
@@ -143,7 +173,7 @@ p { margin: 0; }
   .hero-card { padding: 28px 24px; border-radius: var(--r-xl) var(--r-xl) 0 0; }
 }
 
-.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 56px; align-items: center; }
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 56px; align-items: center; }
 .split--top { align-items: start; }
 
 /* Numbered points */
@@ -238,7 +268,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(43,35,2
 .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
 .field .hint { font-weight: 400; color: var(--muted); font-size: 13px; }
 .row-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.row-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.row-3 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; }
 @media (max-width: 480px) { .row-2 { grid-template-columns: 1fr; } }
 .consent { background: var(--sand); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
@@ -297,3 +327,9 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(43,35,2
   html { scroll-behavior: auto; }
   a.card { transition: none; }
 }
+
+/* Long German words in headings: hyphenate, and break as a last resort so phones never scroll sideways */
+h1, h2, h3 { hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
+/* Fieldsets default to min-width: min-content, which lets long <option> texts widen the form */
+fieldset { min-width: 0; }
+select { max-width: 100%; }

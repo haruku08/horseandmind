@@ -46,5 +46,37 @@
       "minutes": null
     }
   ],
-  "timezone": "Europe/Zurich"
+  "timezone": "Europe/Zurich",
+  "zoho": {
+    "_help": "Bridge until our own booking API exists (apiBase empty). Copy 'action' and the hidden inputs (xnQsjsdp, xmIwtLD, actionType, zc_gad …) from the old site's Zoho webform HTML. 'fields' maps our form fields to Zoho field names; everything else goes into descriptionField. Leave 'action' empty to switch a form off.",
+    "contact": {
+      "action": "",
+      "hidden": {
+        "returnURL": "https://horseandmind.ch/danke/"
+      },
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Mobile"
+      },
+      "descriptionField": "Description"
+    },
+    "camp": {
+      "action": "",
+      "hidden": {
+        "returnURL": "https://horseandmind.ch/danke/"
+      },
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Mobile",
+        "street": "Street",
+        "zip": "Zip Code",
+        "city": "City"
+      },
+      "descriptionField": "Description"
+    }
+  }
 }
