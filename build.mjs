@@ -25,14 +25,24 @@ const src = path.join(root, 'src');
 const out = path.join(root, 'dist');
 
 const site = JSON.parse(fs.readFileSync(path.join(src, 'data/site.json'), 'utf8'));
-const { camps } = JSON.parse(fs.readFileSync(path.join(src, 'data/camps.json'), 'utf8'));
-const layout = fs.readFileSync(path.join(src, 'layout.html'), 'utf8');
+const { camps: realCamps } = JSON.parse(fs.readFileSync(path.join(src, 'data/camps.json'), 'utf8'));
+const layouts = {
+  site: fs.readFileSync(path.join(src, 'layout.html'), 'utf8'),
+  admin: fs.readFileSync(path.join(src, 'layout-admin.html'), 'utf8')
+};
 const buildId = Date.now().toString(36);
 
 // SITE_ENV=production → indexable. Anything else (staging, local) → noindex everywhere,
 // robots.txt blocks all crawlers and Apache sends X-Robots-Tag, so test copies never land in Google.
 const ENV = process.env.SITE_ENV || 'development';
 const PROD = ENV === 'production';
+
+// apiBase "mock": demo backend in the browser (src/assets/js/mock-api.js) plus example camp dates.
+const MOCK = site.apiBase === 'mock';
+if (MOCK && PROD) throw new Error('site.json apiBase is "mock" – the demo backend must not go live. Set a real apiBase (or "" for Zoho) first.');
+const camps = MOCK
+  ? realCamps.concat(JSON.parse(fs.readFileSync(path.join(src, 'data/camps.mock.json'), 'utf8')).camps)
+  : realCamps;
 const year = new Date().getFullYear();
 
 // "Today" in Swiss time, as YYYY-MM-DD, so a camp disappears the day after it ends.
@@ -81,7 +91,7 @@ function campList(campId) {
 </div>`;
   const cards = list.map((c) => {
     const s = campState(c);
-    return `<div class="date" data-end="${c.end}">
+    return `<div class="date" data-id="${c.id}" data-end="${c.end}">
   <div class="date-main">
     <span class="date-when">${formatRange(c.start, c.end)}</span>
     <span class="date-meta">${esc(c.season)} · ${esc(c.time)} · CHF ${c.price}</span>
@@ -291,7 +301,15 @@ function lastmod(file) {
   } catch { return null; }
 }
 
-const clientConfig = JSON.stringify({ apiBase: site.apiBase, services: site.services, timezone: site.timezone, email: site.email, zoho: site.zoho }).replace(/</g, '\\u003c');
+const clientConfig = JSON.stringify({
+  apiBase: site.apiBase, services: site.services, timezone: site.timezone, email: site.email, zoho: site.zoho,
+  camps: upcoming.map((c) => ({ id: c.id, title: c.title, start: c.start, end: c.end, time: c.time, price: c.price, seats: c.seats ?? null, label: formatRange(c.start, c.end) }))
+}).replace(/</g, '\\u003c');
+
+const demoBar = MOCK
+  ? '<div class="demo-bar" role="note">Demo: Buchungen werden nur in diesem Browser gespeichert. <a href="/admin/">Zum CRM</a></div>'
+  : '';
+const mockScript = MOCK ? `<script src="/assets/js/mock-api.js?v=${buildId}" defer></script>` : '';
 
 // ---- build ----
 fs.rmSync(out, { recursive: true, force: true });
@@ -328,10 +346,12 @@ for (const { file, body, meta, rel, url } of pages) {
     year: String(year),
     jsonld: jsonldFor(url, meta, faqs),
     config_json: clientConfig,
+    demo_bar: demoBar,
+    mock_script: mockScript,
     content
   };
   for (const k of navKeys) vars['nav_' + k] = meta.nav === k ? ' aria-current="page"' : '';
-  const html = layout.replace(/\{\{(\w+)\}\}/g, (all, k) => (k in vars ? vars[k] : all));
+  const html = layouts[meta.layout || 'site'].replace(/\{\{(\w+)\}\}/g, (all, k) => (k in vars ? vars[k] : all));
   const dest = path.join(out, rel, 'index.html');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.writeFileSync(dest, html);

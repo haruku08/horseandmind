@@ -333,3 +333,7 @@ h1, h2, h3 { hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
 /* Fieldsets default to min-width: min-content, which lets long <option> texts widen the form */
 fieldset { min-width: 0; }
 select { max-width: 100%; }
+
+/* Demo notice (only when site.json apiBase is "mock") */
+.demo-bar { background: var(--ink); color: var(--ground); font-size: 14px; text-align: center; padding: 8px 16px; }
+.demo-bar a { color: inherit; font-weight: 700; margin-left: 6px; }

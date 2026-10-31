@@ -6,6 +6,8 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 
 - Old site: WordPress 7.1 with a page builder, Bookly booking plugin, Calendly for the Erstgespräch, and HTML webforms posting to **Zoho CRM (free edition)**. Still live; untouched.
 - New site: **static HTML** in this repo, built by `build.mjs` (Node, no dependencies – keep it dependency-free). All pages have content (written 26 Oct from facts found via Google's index of the old site – Manuela to review); remaining gaps are `[PLACEHOLDER]`s and a few todo boxes, both listed by the build. Not deployed yet.
+- **Demo of booking + CRM (31 Oct):** `apiBase: "mock"` → `src/assets/js/mock-api.js` answers the booking API in the browser (localStorage, seeded example data) and powers the CRM at `/admin/` (`src/assets/js/admin.js`, `src/assets/css/admin.css`, `src/layout-admin.html`, page meta `"layout": "admin"`). Owner chose: no database, mock slots, no emails for now. Production build fails while mock is on.
+- Pending: restyle in the old site's real look + simplify pages – waiting for network access to horseandmind.ch (owner wants both done together).
 - A design proposal canvas exists in claude.ai ("Horse & Mind Redesign"): homepage, camp page, camp sign-up on phone, 1:1 slot picker, mini-CRM inbox.
 
 ## Decisions made
@@ -39,6 +41,7 @@ build.mjs                     builder: src/ → dist/  (`node build.mjs`, `npm r
 src/layout.html               header, nav, footer, meta
 src/pages/**/index.html       one page per folder; starts with <!--meta {...} -->
 src/data/camps.json           camp dates (past ones hide automatically, build + client side)
+src/data/camps.mock.json      example camp dates, only merged in demo mode
 src/data/site.json            apiBase, zoho webform bridge, services, address, venue, email, summary (feeds schema.org + llms.txt)
 src/data/photos.json          alt texts for photos in src/assets/img/photos/ (file name = slot label slug)
 src/assets/css|js|img|fonts   styles, site.js (nav, camp dates, forms, Zoho bridge, slot picker), self-hosted fonts
@@ -74,7 +77,7 @@ Website:
 - [ ] Google Business Profile with Hegifeldstrasse 6B
 - [ ] Deploy: FTP secrets, repo variable `SITE_ENV=staging`, staging subdomain; go-live = back up WordPress, `SITE_ENV=production` + live `FTP_DIR`, test redirects, Search Console + Bing
 
-Later (backend):
+Later (backend – replaces mock-api.js, same API + CRM functions):
 - [ ] Durations for Coaching / Reitpädagogik in `site.json` services
 - [ ] Booking backend (Supabase or Workers) + Google Calendar + emails
 - [ ] Mini-CRM admin page

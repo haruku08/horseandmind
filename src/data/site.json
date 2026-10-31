@@ -1,5 +1,5 @@
 {
-  "_help": "Site-wide settings. apiBase stays empty until the booking backend is connected; forms then show a 'not connected yet' notice instead of failing silently.",
+  "_help": "Site-wide settings. apiBase: \"\" = forms post to Zoho (or ask visitors to email), \"mock\" = demo backend in the browser (bookings + CRM at /admin/, data stays in that browser; refused in production builds), a URL = the real booking API.",
   "siteUrl": "https://horseandmind.ch",
   "summary": "Pferdegestütztes Coaching für Kinder und Erwachsene in Winterthur (Schweiz) mit Manuela Pattynama: Einzelcoaching, Reitpädagogik, Kids Camps, Wingwave und Epigenetik. Angebote auf Deutsch.",
   "email": "info@horseandmind.ch",
@@ -28,7 +28,7 @@
     "https://www.instagram.com/horseandmind",
     "https://www.facebook.com/horseandmind.ch"
   ],
-  "apiBase": "",
+  "apiBase": "mock",
   "services": [
     {
       "id": "erstgespraech",

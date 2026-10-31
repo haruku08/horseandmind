@@ -12,6 +12,19 @@
     catch (e) { return new Date().toISOString().slice(0, 10); }
   }
   var TODAY = todayISO();
+
+  // All calls to the booking API go through here. With apiBase "mock" the demo backend
+  // (mock-api.js) answers instead of the network, using the same paths and responses.
+  function request(method, path, body) {
+    if (API === 'mock' && window.HMMock) return window.HMMock.request(method, path, body);
+    return fetch(API + path, {
+      method: method,
+      headers: body ? { 'Content-Type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (b) { return { ok: r.ok, status: r.status, body: b }; });
+    });
+  }
   var params = new URLSearchParams(location.search);
 
   /* Mobile menu */
@@ -40,6 +53,22 @@
       if (cta) cta.innerHTML = '<a class="btn btn--light" href="/kids/land-der-gefuehle/">Mehr zum Camp</a>';
     }
   });
+
+  /* Demo: show live seat counts from the mock store on camp date cards */
+  if (API === 'mock' && window.HMMock) {
+    $all('.date[data-id]').forEach(function (el) {
+      var left = window.HMMock.seatsLeft(el.getAttribute('data-id'));
+      if (left === null) return;
+      var chip = $('.chip', el), link = $('a.btn', el);
+      if (left <= 0) {
+        chip.className = 'chip chip--full'; chip.textContent = 'Ausgebucht';
+        link.textContent = 'Auf die Warteliste'; link.classList.add('btn--outline');
+      } else {
+        chip.className = 'chip chip--' + (left <= 3 ? 'few' : 'open');
+        chip.textContent = left === 1 ? 'Noch 1 Platz frei' : 'Noch ' + left + ' Plätze frei';
+      }
+    });
+  }
 
   /* Camp booking: date select */
   $all('[data-camp-select]').forEach(function (select) {
@@ -175,15 +204,10 @@
       }
       var btn = $('button[type="submit"]', form);
       btn.disabled = true;
-      fetch(API + ENDPOINT[kind], {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).then(function (r) {
-        return r.json().catch(function () { return {}; }).then(function (body) { return { ok: r.ok, body: body }; });
-      }).then(function (res) {
+      request('POST', ENDPOINT[kind], data).then(function (res) {
         if (res.ok) {
           showStatus(form, true, (res.body && res.body.message) || OK_TEXT[kind]);
+          form.dispatchEvent(new CustomEvent('hm:booked'));
           $all('input:not([type=hidden]), textarea, select, button', form).forEach(function (f) { f.disabled = true; });
         } else {
           showStatus(form, false, (res.body && res.body.error) || 'Das hat leider nicht geklappt. Bitte versuche es nochmals.');
@@ -262,10 +286,10 @@
     $('[data-change-slot]', picker).addEventListener('click', function () { form.hidden = true; elSlots.focus(); });
     function load() {
       elSlots.innerHTML = ''; elDays.innerHTML = '<span class="form-note">Freie Zeiten werden geladen …</span>';
-      fetch(API + '/slots?service=' + encodeURIComponent(state.service) + '&days=21')
-        .then(function (r) { return r.json(); })
+      request('GET', '/slots?service=' + encodeURIComponent(state.service) + '&days=21')
         .then(function (res) {
-          state.days = res.days || [];
+          if (!res.ok) throw new Error('slots');
+          state.days = (res.body && res.body.days) || [];
           var first = state.days.filter(function (d) { return d.slots.length; })[0];
           state.day = first ? first.date : null;
           renderDays(); renderSlots();

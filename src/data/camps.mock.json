@@ -1,0 +1,7 @@
+{
+  "_help": "Example camp dates for the demo (apiBase = \"mock\"). Never used in a production build.",
+  "camps": [
+    { "id": "demo-ldg-2027-02", "camp": "land-der-gefuehle", "title": "Das Land der Gefühle", "start": "2027-02-15", "end": "2027-02-18", "season": "Sportferien", "time": "09.00–12.00", "price": 360, "status": "auto", "seatsLeft": null, "seats": 8 },
+    { "id": "demo-ldg-2027-04", "camp": "land-der-gefuehle", "title": "Das Land der Gefühle", "start": "2027-04-19", "end": "2027-04-22", "season": "Frühlingsferien", "time": "09.00–12.00", "price": 360, "status": "auto", "seatsLeft": null, "seats": 6 }
+  ]
+}

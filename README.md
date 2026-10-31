@@ -77,6 +77,18 @@ The deploy needs the repository variable `SITE_ENV` (Settings → Secrets and va
 
 Without it the deploy stops. Local builds default to non-production (`SITE_ENV=production node build.mjs` to test the live version).
 
+## Demo: booking tool and CRM
+
+With `site.json` → `apiBase: "mock"` the site runs a **demo backend in the browser** (`src/assets/js/mock-api.js`):
+
+- Camp sign-up, appointment slot picker and contact form work end to end.
+- The CRM is at **`/admin/`**: Anfragen (inbox with status Neu → Kontaktiert → Gebucht → Bezahlt → Abgeschlossen, or Abgesagt; notes; call/email buttons), Termine (upcoming appointments, opening hours and blocked days that drive the free slots), Camps (seats, participants with health notes, waitlist, CSV), Kontakte (search, children, history, CSV).
+- Data is stored only in the browser that made it (localStorage) and starts with example records. "Zurücksetzen" in the CRM restores them.
+- Example camp dates come from `src/data/camps.mock.json`. Durations other than the Erstgespräch are examples (60 min).
+- A banner on every page says it is a demo. A production build refuses to run with `apiBase: "mock"`.
+
+The data model (contacts, children, bookings with flexible `details`, notes, availability) matches the planned database, so the real backend replaces `mock-api.js` without changing the pages.
+
 ## Forms and booking
 
 Three forms send their data as JSON to the booking API set in `src/data/site.json` → `apiBase`:
