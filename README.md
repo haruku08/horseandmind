@@ -59,7 +59,8 @@ Every photo spot shows a placeholder until its photo exists. To add one:
 
 1. Export it as JPG or WebP, max. 2000 px wide, ideally under 300 KB.
 2. Name it after the placeholder label and put it in `src/assets/img/photos/`:
-   `hero-herbst-2023`, `manuela-portrait`, `coaching`, `coaching-erwachsene`, `erwachsene`, `kids-einzelbegleitung`, `kind-mit-pferd`, `kinder-mit-pferden`, `kids-camp`, `reitpaedagogik`, `wingwave`, `epigenetik`, `binzenloo` (e.g. `binzenloo.jpg`).
+   `hero-herbst-2023`, `manuela-portrait`, `manuela-mit-pferd`, `coaching`, `coaching-erwachsene`, `erwachsene`, `kids-einzelbegleitung`, `kind-mit-pferd`, `kinder-mit-pferden`, `kids-camp`, `kids-camp-anmeldung`, `reitpaedagogik`, `wingwave`, `epigenetik`, `binzenloo`, `partner`, `kontakt`, `termin` (e.g. `binzenloo.jpg`).
+   Every page opens with a full-width hero photo with the headline on it: use landscape photos (at least 2400 px wide) with a calm area for the text in the lower half – a dark shade is added at the bottom automatically.
 3. Adjust its alt text in `src/data/photos.json` so it describes what the photo shows.
 
 The build lists every slot that is still empty. `src/assets/img/og-image.jpg` (1200 × 630) is the preview picture on WhatsApp and Facebook – a text-only version for now; swap in a photo version later.

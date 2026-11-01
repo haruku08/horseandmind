@@ -154,18 +154,44 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-family: var(--display); font-wei
   .lnav-links::-webkit-scrollbar { display: none; }
 }
 
-/* ---------- hero (centered) ---------- */
-.hero { padding-top: 72px; text-align: center; }
-.hero .wrap:not(.hero-media) { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-.hero h1 { font-size: clamp(44px, 7.4vw, 84px); line-height: 1.04; max-width: 15ch; }
-.hero .subhead { max-width: 640px; }
+/* ---------- hero: one full-width photo, text on top ---------- */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: min(88vh, 900px); display: flex; align-items: flex-end;
+  color: #F6EFE6; text-align: center;
+}
+.hero--page { min-height: min(72vh, 720px); }
+.hero--short { min-height: min(46vh, 440px); }
+.hero > .ph { position: absolute; inset: 0; z-index: -2; min-height: 0; border-radius: 0; background: #6E5B4A; }
+.hero > .ph::before { background-image: radial-gradient(rgba(255, 255, 255, .08) 1.2px, transparent 1.2px); }
+.hero > .ph .ph-label { left: auto; right: 16px; bottom: auto; top: 16px; }
+/* shade so white text stays readable on any photo */
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0) 30%, rgba(20, 14, 10, .35) 60%, rgba(20, 14, 10, .72) 100%);
+}
+.hero-content { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-block: 96px 72px; }
+.hero h1 { color: #FFF; font-size: clamp(44px, 7.4vw, 88px); line-height: 1.03; max-width: 15ch; }
+.hero--page h1 { font-size: clamp(40px, 6vw, 76px); }
+.hero--short h1 { font-size: clamp(36px, 5vw, 60px); }
+.hero .kicker { color: #F0C79C; }
+.hero .subhead { color: rgba(246, 239, 230, .92); max-width: 620px; }
 .hero .ctas { margin-top: 10px; }
-.hero-media { margin-top: 56px; }
-.hero-media .ph { border-radius: var(--r-tile); min-height: clamp(280px, 48vw, 600px); }
-@media (max-width: 734px) { .hero { padding-top: 48px; } .hero-media { margin-top: 40px; } }
-
-/* page hero for sub pages: same pattern, a little smaller */
-.hero--page h1 { font-size: clamp(40px, 6vw, 72px); }
+.hero .more { color: #FFF; }
+.hero .btn--secondary { color: #FFF; border-color: rgba(255, 255, 255, .7); }
+@media (max-width: 734px) {
+  .hero { min-height: min(84vh, 720px); }
+  .hero--page { min-height: min(70vh, 620px); }
+  .hero--short { min-height: 360px; }
+  .hero-content { padding-block: 72px 48px; }
+}
+/* a slow settle of the photo and text on load – starts visible, so nothing waits on it */
+@media (prefers-reduced-motion: no-preference) {
+  .hero > .ph { animation: hero-settle 2.4s cubic-bezier(.2, .7, .2, 1) both; }
+  .hero-content { animation: hero-rise 1.2s .15s cubic-bezier(.2, .7, .2, 1) both; }
+}
+@keyframes hero-settle { from { transform: scale(1.07); } to { transform: scale(1); } }
+@keyframes hero-rise { from { transform: translateY(18px); opacity: .4; } to { transform: none; opacity: 1; } }
 
 /* ---------- tiles (homepage-style blocks) ---------- */
 .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
