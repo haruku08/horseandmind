@@ -13,7 +13,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 ## Decisions made
 
 1. **Static site, same URLs as the WordPress site** (SEO). Old URLs that changed are 301-redirected in `src/static/.htaccess`.
-2. **Look:** keep the current site's warmth. Owner likes the canvas colors and the rounded corners. Tokens are at the top of `src/assets/css/site.css` (cream ground, caramel accent `#8E4F24`, sage `#5F6B52`, radii 10–28px). Fonts Cormorant Garamond (display) + Mulish (body) are **stand-ins** – the real fonts of the old site weren't checked yet. Imagery is very important to the owner.
+2. **Look:** keep the current site's warmth. Owner likes the canvas colors and the rounded corners. Tokens are at the top of `src/assets/css/site.css` (cream ground, caramel accent `#8E4F24`, sage `#5F6B52`, radii 10–28px). Fonts (owner's choice, 1 Nov 2026): **Eczar** for titles, **Plus Jakarta Sans** for text – self-hosted in `src/assets/fonts/` (latin subset; Eczar 500/600, Jakarta 400/600/700). Eczar has no italic, so don't use italic display text. Final designs from the owner will follow; restyle then. Imagery is very important to the owner.
 3. **Photos:** placeholders for now (`{{ph:Label|class}}` tokens). The owner will provide the original images later.
 4. **Hosting/deploy:** GitHub repo (private) → GitHub Action builds and uploads `dist/` via FTP(S) to the existing host. Test on a staging subdomain first, then switch `FTP_DIR` to the live folder. Secrets needed: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR`.
 5. **Booking – direction agreed:** drop Bookly, Calendly and eventually Zoho. Build our own:
