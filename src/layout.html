@@ -24,60 +24,71 @@
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
 {{demo_bar}}
-<header class="site-header">
+<header class="gnav">
   <div class="wrap">
     <a class="logo" href="/">HORSE&amp;MIND</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">Menü</button>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menü">
+      <svg class="i-open" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 7h16M2 13h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg class="i-close" viewBox="0 0 20 20" aria-hidden="true"><path d="m4 4 12 12M16 4 4 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
       <a href="/pferdeunterstuetztes-coaching/"{{nav_erwachsene}}>Erwachsene</a>
       <a href="/kids/"{{nav_kids}}>Kids</a>
       <a href="/kids/land-der-gefuehle/"{{nav_camps}}>Camps</a>
       <a href="/ueber-uns/"{{nav_ueber}}>Über mich</a>
-      <a class="btn" href="/termin/">Erstgespräch buchen</a>
+      <a href="/kontakt/">Kontakt</a>
+      <a class="btn btn--sm" href="/termin/">Erstgespräch buchen</a>
     </nav>
   </div>
 </header>
-
+{{lnav}}
 <main id="main">
 {{content}}
 </main>
 
-<footer class="site-footer">
+<footer class="gfoot">
   <div class="wrap">
-    <div class="grid">
-      <div class="col">
-        <span class="logo">HORSE&amp;MIND</span>
-        <span>Manuela Pattynama<br>Hegifeldstrasse 6B<br>8404 Winterthur</span>
+    {{crumbs}}
+    <div class="fcols">
+      <div>
+        <h2>Erwachsene</h2>
+        <ul>
+          <li><a href="/pferdeunterstuetztes-coaching/">Pferdegestütztes Coaching</a></li>
+          <li><a href="/ruhe-im-chaos/">Ruhe im Chaos</a></li>
+          <li><a href="/wing-wave/">Wingwave</a></li>
+          <li><a href="/epigenetik/">Epigenetik</a></li>
+        </ul>
       </div>
-      <div class="col">
-        <strong>Angebot</strong>
-        <a href="/pferdeunterstuetztes-coaching/">Pferdegestütztes Coaching</a>
-        <a href="/kids/land-der-gefuehle/">Kids Camps</a>
-        <a href="/kids/reitpaedagogik/">Reitpädagogik</a>
-        <a href="/wing-wave/">Wingwave</a>
-        <a href="/epigenetik/">Epigenetik</a>
+      <div>
+        <h2>Kids</h2>
+        <ul>
+          <li><a href="/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/">Einzelbegleitung</a></li>
+          <li><a href="/kids/reitpaedagogik/">Reitpädagogik</a></li>
+          <li><a href="/kids/land-der-gefuehle/">Kids Camp</a></li>
+        </ul>
       </div>
-      <div class="col">
-        <strong>Horse &amp; Mind</strong>
-        <a href="/ueber-uns/">Über mich</a>
-        <a href="/ueber-uns/kursort-binzenloo-winterthur/">Kursort Binzenloo</a>
-        <a href="/ueber-uns/meine-partner/">Partner</a>
-        <a href="/kontakt/">Kontakt</a>
-        <a href="https://shop.spreadshirt.ch/horseandmind/" rel="noopener">Shop</a>
+      <div>
+        <h2>Horse &amp; Mind</h2>
+        <ul>
+          <li><a href="/ueber-uns/">Über mich</a></li>
+          <li><a href="/ueber-uns/kursort-binzenloo-winterthur/">Kursort Binzenloo</a></li>
+          <li><a href="/ueber-uns/meine-partner/">Partner</a></li>
+          <li><a href="https://shop.spreadshirt.ch/horseandmind/" rel="noopener">Shop</a></li>
+        </ul>
       </div>
-      <div class="col">
-        <strong>Rechtliches</strong>
-        <a href="/impressum/">Impressum</a>
-        <a href="/datenschutz/">Datenschutz</a>
-        <a href="/agb/">AGB</a>
+      <div>
+        <h2>Kontakt</h2>
+        <ul>
+          <li><a href="/termin/">Erstgespräch buchen</a></li>
+          <li><a href="/kontakt/">Nachricht schreiben</a></li>
+          <li><a href="https://www.instagram.com/horseandmind" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/horseandmind.ch" rel="noopener">Facebook</a></li>
+        </ul>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© {{year}} Horse &amp; Mind</span>
-      <span class="social">
-        <a href="https://www.instagram.com/horseandmind" rel="noopener">Instagram</a>
-        <a href="https://www.facebook.com/horseandmind.ch" rel="noopener">Facebook</a>
-      </span>
+    <div class="fbottom">
+      <span>© {{year}} Horse &amp; Mind · Manuela Pattynama · Hegifeldstrasse 6B, 8404 Winterthur</span>
+      <nav aria-label="Rechtliches"><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/agb/">AGB</a></nav>
     </div>
   </div>
 </footer>

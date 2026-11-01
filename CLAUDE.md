@@ -7,16 +7,17 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 - Old site: WordPress 7.1 with a page builder, Bookly booking plugin, Calendly for the Erstgespräch, and HTML webforms posting to **Zoho CRM (free edition)**. Still live; untouched.
 - New site: **static HTML** in this repo, built by `build.mjs` (Node, no dependencies – keep it dependency-free). All pages have content (written 26 Oct from facts found via Google's index of the old site – Manuela to review); remaining gaps are `[PLACEHOLDER]`s and a few todo boxes, both listed by the build. Not deployed yet.
 - **Demo of booking + CRM (31 Oct):** `apiBase: "mock"` → `src/assets/js/mock-api.js` answers the booking API in the browser (localStorage, seeded example data) and powers the CRM at `/admin/` (`src/assets/js/admin.js`, `src/assets/css/admin.css`, `src/layout-admin.html`, page meta `"layout": "admin"`). Owner chose: no database, mock slots, no emails for now. Production build fails while mock is on.
-- Pending: restyle in the old site's real look + simplify pages – waiting for network access to horseandmind.ch (owner wants both done together).
+- 1 Nov: pages simplified and rebuilt with apple.com-style components (see decision 2). Owner's final designs will follow.
 - A design proposal canvas exists in claude.ai ("Horse & Mind Redesign"): homepage, camp page, camp sign-up on phone, 1:1 slot picker, mini-CRM inbox.
 
 ## Decisions made
 
 1. **Static site, same URLs as the WordPress site** (SEO). Old URLs that changed are 301-redirected in `src/static/.htaccess`.
-2. **Look:** keep the current site's warmth. Owner likes the canvas colors and the rounded corners. Tokens are at the top of `src/assets/css/site.css` (cream ground, caramel accent `#8E4F24`, sage `#5F6B52`, radii 10–28px). Fonts (owner's choice, 1 Nov 2026): **Eczar** for titles, **Plus Jakarta Sans** for text – self-hosted in `src/assets/fonts/` (latin subset; Eczar 500/600, Jakarta 400/600/700). Eczar has no italic, so don't use italic display text. Final designs from the owner will follow; restyle then. Imagery is very important to the owner.
-3. **Photos:** placeholders for now (`{{ph:Label|class}}` tokens). The owner will provide the original images later.
-4. **Hosting/deploy:** GitHub repo (private) → GitHub Action builds and uploads `dist/` via FTP(S) to the existing host. Test on a staging subdomain first, then switch `FTP_DIR` to the live folder. Secrets needed: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR`.
-5. **Booking – direction agreed:** drop Bookly, Calendly and eventually Zoho. Build our own:
+2. **Components (1 Nov 2026): apple.com as reference for components, not fonts.** `site.css` is a small component system: sticky blurred global nav (`.gnav`, full-screen menu on phones), section bar per area (`.lnav`, defined in `LOCAL_NAV` in build.mjs from page meta `nav`), centered heroes (`.hero`, `.hero--page`, `.hero-media`), tiles (`.tiles/.tile`, `--dark`, `--wide`), highlight cards (`.bento/.cell`), numbered steps (`.steps/.step`, only for real sequences), gallery with paddles (`[data-gallery]`), compare columns (`.compare`), spec rows (`.specs`), FAQ accordion, pill buttons (`.btn`, `--secondary`, `--light`, `--sm`) and "›" links (`.more`), form pages in `.form-layout`, booking picker as selection tiles. Footer: Apple-style with breadcrumbs (`{{crumbs}}`). Copy style: short headline with a period, one-line subhead, max. two actions. Radius scale: tiles 28 · cards 18 · controls 12 · pills.
+3. **Look:** keep the current site's warmth. Owner likes the canvas colors and the rounded corners. Tokens are at the top of `src/assets/css/site.css` (cream ground, caramel accent `#8E4F24`, sage `#5F6B52`, radii 10–28px). Fonts (owner's choice, 1 Nov 2026): **Eczar** for titles, **Plus Jakarta Sans** for text – self-hosted in `src/assets/fonts/` (latin subset; Eczar 500/600, Jakarta 400/600/700). Eczar has no italic, so don't use italic display text. Final designs from the owner will follow; restyle then. Imagery is very important to the owner.
+4. **Photos:** placeholders for now (`{{ph:Label|class}}` tokens). The owner will provide the original images later.
+5. **Hosting/deploy:** GitHub repo (private) → GitHub Action builds and uploads `dist/` via FTP(S) to the existing host. Test on a staging subdomain first, then switch `FTP_DIR` to the live folder. Secrets needed: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR`.
+6. **Booking – direction agreed:** drop Bookly, Calendly and eventually Zoho. Build our own:
    - **1:1 sessions** (Erstgespräch, Coaching, Reitpädagogik): free slots read from **Manuela's Google Calendar** (free/busy), booking creates the event and sends the client a Google invite.
    - **Camps:** fixed dates with seat limits, waitlist when full.
    - **Mini-CRM** instead of Zoho: contacts, children (linked to parent), bookings with status (Neu → Kontaktiert → Gebucht → Bezahlt → Abgeschlossen), notes, CSV export, private admin page usable on phone. Each form may have its own fields (store extras in a flexible `details` JSON on the booking) – the owner currently misuses Zoho's ~10 free custom fields, this is a main reason to move.
@@ -24,7 +25,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
    - Confirmation/reminder emails via a sending service (e.g. Resend).
    - Not decided yet: payments online or not.
    - **Until our backend exists ("website only" phase):** contact and camp forms post to the existing **Zoho CRM webform** (`site.json` → `zoho`, keys still to copy from the old site), Erstgespräch via Calendly. Zoho redirects to `/danke/`.
-6. **Zoho migration (later):** owner will export Leads/Contacts as CSV and explain which misused field means what. Plan: map fields, dedupe by email, link parents/children, keep Zoho ID, dry run with report, then import; run both systems in parallel 1–2 weeks.
+7. **Zoho migration (later):** owner will export Leads/Contacts as CSV and explain which misused field means what. Plan: map fields, dedupe by email, link parents/children, keep Zoho ID, dry run with report, then import; run both systems in parallel 1–2 weeks.
 
 ## Options considered and set aside
 

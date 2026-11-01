@@ -294,6 +294,39 @@ function jsonldFor(url, meta, faqs) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 }
 
+// Section bar under the global nav (apple.com "local nav"): one per area of the site.
+const LOCAL_NAV = {
+  erwachsene: { title: 'Coaching', href: '/pferdeunterstuetztes-coaching/', links: [
+    ['Übersicht', '/pferdeunterstuetztes-coaching/'], ['Ruhe im Chaos', '/ruhe-im-chaos/'], ['Wingwave', '/wing-wave/'], ['Epigenetik', '/epigenetik/']] },
+  kids: { title: 'Kids', href: '/kids/', links: [
+    ['Übersicht', '/kids/'], ['Einzelbegleitung', '/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/'], ['Reitpädagogik', '/kids/reitpaedagogik/'], ['Kids Camp', '/kids/land-der-gefuehle/']] },
+  ueber: { title: 'Über mich', href: '/ueber-uns/', links: [
+    ['Manuela', '/ueber-uns/'], ['Kursort', '/ueber-uns/kursort-binzenloo-winterthur/'], ['Partner', '/ueber-uns/meine-partner/'], ['Kontakt', '/kontakt/']] }
+};
+LOCAL_NAV.camps = LOCAL_NAV.kids;
+
+function localNav(url, meta) {
+  const ln = LOCAL_NAV[meta.nav];
+  if (!ln || meta.layout) return '';
+  const links = ln.links.map(([label, href]) => `<a href="${href}"${href === url ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+  return `<nav class="lnav" aria-label="${esc(ln.title)}"><div class="wrap"><a class="lnav-title" href="${ln.href}">${esc(ln.title)}</a><div class="lnav-links">${links}</div><a class="btn btn--sm" href="/termin/">Erstgespräch</a></div></nav>`;
+}
+
+// Breadcrumb trail in the footer (the same path as the BreadcrumbList schema)
+function crumbTrail(url, meta) {
+  if (url === '/' || meta.noindex) return '';
+  const segs = url.split('/').filter(Boolean);
+  const items = ['<li><a href="/">Horse &amp; Mind</a></li>'];
+  let acc = '/';
+  segs.forEach((seg, i) => {
+    acc += seg + '/';
+    const name = i === segs.length - 1 ? crumb(meta.title) : pageTitles.get(acc);
+    if (!name) return;
+    items.push(i === segs.length - 1 ? `<li><span aria-current="page">${esc(name)}</span></li>` : `<li><a href="${acc}">${esc(name)}</a></li>`);
+  });
+  return `<ol class="crumbs" aria-label="Pfad">${items.join('')}</ol>`;
+}
+
 // Last change of a page, from git (needs full history in CI: fetch-depth 0).
 function lastmod(file) {
   try {
@@ -347,6 +380,8 @@ for (const { file, body, meta, rel, url } of pages) {
     jsonld: jsonldFor(url, meta, faqs),
     config_json: clientConfig,
     demo_bar: demoBar,
+    lnav: localNav(url, meta),
+    crumbs: crumbTrail(url, meta),
     mock_script: mockScript,
     content
   };

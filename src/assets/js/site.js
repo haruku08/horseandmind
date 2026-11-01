@@ -27,14 +27,36 @@
   }
   var params = new URLSearchParams(location.search);
 
-  /* Mobile menu */
+  /* Mobile menu: full-screen panel */
   var toggle = $('.nav-toggle'), nav = $('#nav');
   if (toggle && nav) {
-    toggle.addEventListener('click', function () {
-      var open = nav.classList.toggle('is-open');
+    var setMenu = function (open) {
+      nav.classList.toggle('is-open', open);
+      document.body.classList.toggle('menu-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) { setMenu(false); toggle.focus(); }
     });
+    window.matchMedia('(min-width: 835px)').addEventListener('change', function (m) { if (m.matches) setMenu(false); });
   }
+
+  /* Galleries: previous/next buttons scroll by one card */
+  $all('[data-gallery]').forEach(function (g) {
+    var track = $('.gallery-track', g), prev = $('[data-prev]', g), next = $('[data-next]', g);
+    if (!track || !prev || !next) return;
+    function step() { var card = track.firstElementChild; return card ? card.getBoundingClientRect().width + 20 : 300; }
+    function update() {
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+    }
+    prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
 
   /* Camp dates: hide anything that ended before today, even if the site was built earlier */
   $all('[data-dates]').forEach(function (list) {
