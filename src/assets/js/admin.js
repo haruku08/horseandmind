@@ -127,7 +127,7 @@
     }).join('');
     return header('Anfragen') +
       '<div class="chips" role="group" aria-label="Filter">' + chips + '</div>' +
-      (list.length ? '<div class="list">' + list.map(function (b) { return row(b); }).join('') + '</div>'
+      (list.length ? '<div class="list list--table"><div class="list-head" aria-hidden="true"><span>Name</span><span>Anfrage</span><span>Eingang</span><span>Status</span></div>' + list.map(function (b) { return row(b); }).join('') + '</div>'
         : '<p class="a-empty-line">Keine Anfragen in dieser Ansicht.</p>');
   }
 
@@ -301,7 +301,7 @@
     }).sort(function (a, b) { return fullName(a).localeCompare(fullName(b), 'de'); });
     var html = header('Kontakte', { action: '<button type="button" class="btn btn--ghost btn--sm" data-action="contacts-csv">' + icon('download') + 'CSV</button>' });
     html += '<div class="search">' + icon('search') + '<label class="sr" for="q">Suchen</label><input id="q" type="search" placeholder="Name, E-Mail, Kind …" value="' + esc(contactQuery) + '" autocomplete="off"></div>';
-    html += '<div class="list" data-contact-list>' + contactRows(list) + '</div>';
+    html += '<div class="list list--table"><div class="list-head" aria-hidden="true"><span>Name</span><span>E-Mail · Kinder</span><span>Anfragen</span><span></span></div><div data-contact-list>' + contactRows(list) + '</div></div>';
     return html;
   }
   function contactRows(list) {
