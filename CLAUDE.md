@@ -8,6 +8,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 - New site: **static HTML** in this repo, built by `build.mjs` (Node, no dependencies – keep it dependency-free). All pages have content (written 26 Oct from facts found via Google's index of the old site – Manuela to review); remaining gaps are `[PLACEHOLDER]`s and a few todo boxes, both listed by the build. Not deployed yet.
 - **Demo of booking + CRM (31 Oct):** `apiBase: "mock"` → `src/assets/js/mock-api.js` answers the booking API in the browser (localStorage, seeded example data) and powers the CRM at `/admin/` (`src/assets/js/admin.js`, `src/assets/css/admin.css`, `src/layout-admin.html`, page meta `"layout": "admin"`). Owner chose: no database, mock slots, no emails for now. Production build fails while mock is on.
 - 1 Nov: pages simplified and rebuilt with apple.com-style components (see decision 2). Owner's final designs will follow.
+- **13 Nov: old site crawled** (`docs/old-site.md`): all 54 old URLs redirect or exist, Zoho keys + Manuela's field usage wired in, real facts taken over (Reitpädagogik schedule, kids price, AGB, partners), new page Leadership & Team, **photos from the old site in all 19 photo spots** (web versions until originals arrive), Google Analytics behind a consent banner. Heroes are full-screen.
 - A design proposal canvas exists in claude.ai ("Horse & Mind Redesign"): homepage, camp page, camp sign-up on phone, 1:1 slot picker, mini-CRM inbox.
 
 ## Decisions made
@@ -15,7 +16,9 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 1. **Static site, same URLs as the WordPress site** (SEO). Old URLs that changed are 301-redirected in `src/static/.htaccess`.
 2. **Components (1 Nov 2026): apple.com as reference for components, not fonts.** `site.css` is a small component system: sticky blurred global nav (`.gnav`, full-screen menu on phones), section bar per area (`.lnav`, defined in `LOCAL_NAV` in build.mjs from page meta `nav`), emotional photo hero on every page (`.hero` = one full-width photo `{{ph:…}}` with the text on it in `.hero-content`, dark shade at the bottom, slow settle animation; sizes `.hero` home, `.hero--page`, `.hero--short` for form pages; legal/404/danke have no hero), tiles (`.tiles/.tile`, `--dark`, `--wide`), highlight cards (`.bento/.cell`), numbered steps (`.steps/.step`, only for real sequences), gallery with paddles (`[data-gallery]`), compare columns (`.compare`), spec rows (`.specs`), FAQ accordion, pill buttons (`.btn`, `--secondary`, `--light`, `--sm`) and "›" links (`.more`), form pages in `.form-layout`, booking picker as selection tiles. Footer: Apple-style with breadcrumbs (`{{crumbs}}`). Copy style: short headline with a period, one-line subhead, max. two actions. Radius scale: tiles 28 · cards 18 · controls 12 · pills.
 3. **Look (13 Nov 2026): Biings Design System as style reference** (biings.design, CC BY 4.0 – credited in the Impressum and site.css header; their name/logo and their commercial fonts Averta/Plush are not used). Apple-style structure stays; surfaces follow Biings: plum text `#46285D`, warm greys (page `#FAF7F5`, tiles `#F3EEEA`), **caramel `#8E4F24` stays the accent** (buttons, links), small radii (tiles 18 · cards 12 · buttons/fields 9 · tags pill), soft shadows with lift on hover, pastel gradient cards (lilac, peach, sage, rose – tiles alternate automatically), film grain on tinted areas (`--grain`), gradient titles (plum→caramel) on tile/compare titles and `.is-gradient` headlines, deep-plum dark tiles. Fonts: **Ubuntu 700 for the logo**, **Fraunces** for headlines, **Plus Jakarta Sans** for text – all self-hosted in `src/assets/fonts/` with their licenses. The CRM (`admin.css`) uses the same tokens. Imagery is very important to the owner.
-4. **Photos:** placeholders for now (`{{ph:Label|class}}` tokens). The owner will provide the original images later.
+4. **Photos:** every `{{ph:Label|class}}` spot now has a photo from the old site (`src/assets/img/photos/<slug>.jpg`, alt texts in `photos.json`); swap in the owner's originals with the same file names when they arrive.
+4b. **Analytics:** Google Analytics 4 `G-RY5BHSBLTG` (site.json → analytics), only in production builds and only after consent in the cookie banner (`site.js`); footer link «Cookie-Einstellungen»; Datenschutz section `#analytics`.
+4c. **Team:** Manuela only (Rahel Deloof from the old site left out, owner's decision 13 Nov 2026).
 5. **Hosting/deploy:** GitHub repo (private) → GitHub Action builds and uploads `dist/` via FTP(S) to the existing host. Test on a staging subdomain first, then switch `FTP_DIR` to the live folder. Secrets needed: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR`.
 6. **Booking – direction agreed:** drop Bookly, Calendly and eventually Zoho. Build our own:
    - **1:1 sessions** (Erstgespräch, Coaching, Reitpädagogik): free slots read from **Manuela's Google Calendar** (free/busy), booking creates the event and sends the client a Google invite.
@@ -52,6 +55,8 @@ src/static/                   .htaccess, robots.txt → site root
 
 Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). FAQ blocks (`<details class="faq"><summary>…</summary><div class="faq-a">…</div></details>`) become FAQPage schema. `[ALL CAPS]` placeholders are highlighted on the page. The build warns about todo boxes, placeholders and empty photo slots. `SITE_ENV=production` makes the site indexable; anything else = noindex + robots block (deploy requires the repo variable `SITE_ENV`).
 
+Old-site inventory (plugins, Zoho field meaning, facts, photo sources): `docs/old-site.md`.
+
 Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}}`, `{{ph:Label|class}}`, `{{year}}`. Page meta keys: `title`, `description`, `nav` (erwachsene|kids|camps|ueber), `noindex`.
 
 ## Booking API contract (frontend already built against it)
@@ -67,14 +72,13 @@ Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}
 ## Open to-dos
 
 Website:
-- [ ] Manuela reviews all page texts (written from Google-index facts, some of them possibly outdated: group of 4 in Reitpädagogik, 30/60-min kids intro, free phone Erstgespräch, KKP®-Trainerin, Verband membership, Parelli since 2014). Generic copy to check: FAQ answers, "Was du mitbringen solltest" on Kursort, /kids/ hub, AGB draft (sections 6–8 are suggestions)
-- [ ] Fill `[PLACEHOLDER]`s: prices (old site showed CHF 45/90 min, 90, 110, 140 – conflicting, so none used), Reitpädagogik day/time/duration, Wingwave duration, sessions in the intensive coaching, UID, photo credits, hosting provider, Zoho data centre, AGB payment/cancellation terms
-- [ ] Todo boxes: horses (names, photos), Kursort parking/ÖV, partner logos + links
-- [ ] Real photos (13 slots, file names in README) + photo og-image
-- [ ] Zoho webform keys into `site.json` → `zoho` (from the old site's form HTML), test both forms
-- [ ] Full crawl of the live site (blocked from the cloud sandbox; allow `horseandmind.ch` in the environment's network settings) – remaining old URLs, plugins, tracking; real fonts/colors
+- [ ] Manuela reviews all page texts. Facts now from the old site (13 Nov): Reitpädagogik schedule + waitlist, kids 1:1 ab CHF 110/h, Leadership «Preis nach Absprache», AGB, partners. Still generic copy to check: FAQ answers, «Was du mitbringen solltest» (Kursort), /kids/ hub, Leadership page
+- [ ] Fill `[PLACEHOLDER]`s (build lists them): adult coaching price, Ruhe im Chaos sessions + price, Wingwave duration + price, Reitpädagogik price (old CHF 45 not on current page), UID, photo credits, hosting provider, Starlett's character
+- [ ] Todo boxes: more horses (names/photos), Kursort parking/ÖV
+- [ ] Original photos to replace the web versions (same file names), photo og-image
+- [ ] Switch forms to Zoho for go-live: `site.json` apiBase `""` (now `"mock"` for the demo); keys are filled. Send one real test lead per form
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
-- [ ] Legal check of Impressum, Datenschutz, AGB (Swiss nDSG; children's data and health notes)
+- [ ] Legal check of Impressum, Datenschutz (now incl. Google Analytics, Zoho EU, Calendly), AGB
 - [ ] Google Business Profile with Hegifeldstrasse 6B
 - [ ] Deploy: FTP secrets, repo variable `SITE_ENV=staging`, staging subdomain; go-live = back up WordPress, `SITE_ENV=production` + live `FTP_DIR`, test redirects, Search Console + Bing
 
@@ -82,7 +86,7 @@ Later (backend – replaces mock-api.js, same API + CRM functions):
 - [ ] Durations for Coaching / Reitpädagogik in `site.json` services
 - [ ] Booking backend (Supabase or Workers) + Google Calendar + emails
 - [ ] Mini-CRM admin page
-- [ ] Zoho CSV import
+- [ ] Zoho CSV import (field meaning in `docs/old-site.md`)
 
 ## Findings from the old site worth remembering
 

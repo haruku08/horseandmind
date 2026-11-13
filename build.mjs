@@ -134,7 +134,10 @@ function campOptions(campId) {
   const opts = list.map((c) => {
     const s = campState(c);
     const suffix = s.wait ? ' (Warteliste)' : '';
-    return `<option value="${c.id}" data-end="${c.end}" data-wait="${s.wait ? 1 : 0}" data-label="${esc(formatRange(c.start, c.end))}" data-meta="${esc(`${c.time} · CHF ${c.price} · ${s.chip}`)}">${esc(c.title)} ${shortRange(c.start, c.end)}${suffix}</option>`;
+    const p2 = (n) => String(n).padStart(2, '0');
+    const a = parts(c.start), b = parts(c.end);
+    const zoho = `${c.title.replace(/^Das /, '')} ${a.m === b.m ? p2(a.d) + '.' : p2(a.d) + '.' + p2(a.m) + '.'}-${p2(b.d)}.${p2(b.m)}.${String(b.y).slice(2)}`;
+    return `<option value="${c.id}" data-zoho="${esc(zoho)}" data-end="${c.end}" data-wait="${s.wait ? 1 : 0}" data-label="${esc(formatRange(c.start, c.end))}" data-meta="${esc(`${c.time} · CHF ${c.price} · ${s.chip}`)}">${esc(c.title)} ${shortRange(c.start, c.end)}${suffix}</option>`;
   });
   opts.push('<option value="interesse" data-label="Nächstes Camp" data-meta="Unverbindlich – wir melden uns, sobald die Daten stehen">Interesse fürs nächste Camp (unverbindlich)</option>');
   return opts.join('\n');
@@ -297,7 +300,7 @@ function jsonldFor(url, meta, faqs) {
 // Section bar under the global nav (apple.com "local nav"): one per area of the site.
 const LOCAL_NAV = {
   erwachsene: { title: 'Coaching', href: '/pferdeunterstuetztes-coaching/', links: [
-    ['Übersicht', '/pferdeunterstuetztes-coaching/'], ['Ruhe im Chaos', '/ruhe-im-chaos/'], ['Wingwave', '/wing-wave/'], ['Epigenetik', '/epigenetik/']] },
+    ['Übersicht', '/pferdeunterstuetztes-coaching/'], ['Ruhe im Chaos', '/ruhe-im-chaos/'], ['Leadership & Team', '/pferdeunterstuetztes-coaching/leadership-team-coaching/'], ['Wingwave', '/wing-wave/'], ['Epigenetik', '/epigenetik/']] },
   kids: { title: 'Kids', href: '/kids/', links: [
     ['Übersicht', '/kids/'], ['Einzelbegleitung', '/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/'], ['Reitpädagogik', '/kids/reitpaedagogik/'], ['Kids Camp', '/kids/land-der-gefuehle/']] },
   ueber: { title: 'Über mich', href: '/ueber-uns/', links: [
@@ -308,7 +311,7 @@ LOCAL_NAV.camps = LOCAL_NAV.kids;
 function localNav(url, meta) {
   const ln = LOCAL_NAV[meta.nav];
   if (!ln || meta.layout) return '';
-  const links = ln.links.map(([label, href]) => `<a href="${href}"${href === url ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+  const links = ln.links.map(([label, href]) => `<a href="${href}"${href === url ? ' aria-current="page"' : ''}>${esc(label)}</a>`).join('');
   return `<nav class="lnav" aria-label="${esc(ln.title)}"><div class="wrap"><a class="lnav-title" href="${ln.href}">${esc(ln.title)}</a><div class="lnav-links">${links}</div><a class="btn btn--sm" href="/termin/">Erstgespräch</a></div></nav>`;
 }
 
@@ -336,6 +339,7 @@ function lastmod(file) {
 
 const clientConfig = JSON.stringify({
   apiBase: site.apiBase, services: site.services, timezone: site.timezone, email: site.email, zoho: site.zoho,
+  gaId: PROD && site.analytics ? site.analytics.gaId : null,
   camps: upcoming.map((c) => ({ id: c.id, title: c.title, start: c.start, end: c.end, time: c.time, price: c.price, seats: c.seats ?? null, label: formatRange(c.start, c.end) }))
 }).replace(/</g, '\\u003c');
 

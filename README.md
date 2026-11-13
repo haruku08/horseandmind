@@ -55,7 +55,7 @@ Every push to `main` on GitHub builds the site and uploads it automatically (`.g
 
 ## Images
 
-Every photo spot shows a placeholder until its photo exists. To add one:
+Every photo spot has a photo now – web versions taken from the old site until the originals arrive. To replace one (or fill a new spot):
 
 1. Export it as JPG or WebP, max. 2000 px wide, ideally under 300 KB.
 2. Name it after the placeholder label and put it in `src/assets/img/photos/`:

@@ -42,6 +42,60 @@
     window.matchMedia('(min-width: 835px)').addEventListener('change', function (m) { if (m.matches) setMenu(false); });
   }
 
+  /* Cookie consent: Google Analytics loads only after "Akzeptieren" (production builds only) */
+  var CONSENT_KEY = 'hm-consent';
+  function getConsent() { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { /* private mode: ask again next time */ } }
+  function loadAnalytics(id) {
+    if (window.gtag) return;
+    var s = document.createElement('script');
+    s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', id);
+  }
+  function removeAnalyticsCookies() {
+    document.cookie.split(';').forEach(function (c) {
+      var name = c.split('=')[0].trim();
+      if (/^_ga/.test(name)) {
+        [location.hostname, '.' + location.hostname.replace(/^www\./, '')].forEach(function (d) {
+          document.cookie = name + '=; Max-Age=0; path=/; domain=' + d;
+        });
+        document.cookie = name + '=; Max-Age=0; path=/';
+      }
+    });
+  }
+  if (CFG.gaId) {
+    var openLink = $('[data-consent-open]');
+    if (openLink) openLink.hidden = false;
+    var banner = null;
+    var showBanner = function () {
+      if (banner) { banner.hidden = false; $('button', banner).focus(); return; }
+      banner = document.createElement('div');
+      banner.className = 'consent-banner';
+      banner.setAttribute('role', 'dialog');
+      banner.setAttribute('aria-label', 'Cookies');
+      banner.innerHTML = '<p>Darf ich mit Google Analytics anonym messen, wie die Website genutzt wird? Dafür werden Cookies gesetzt. <a href="/datenschutz/#analytics">Mehr erfahren</a></p>' +
+        '<div class="consent-actions"><button type="button" class="btn btn--sm" data-consent="yes">Akzeptieren</button><button type="button" class="btn btn--sm btn--outline" data-consent="no">Ablehnen</button></div>';
+      document.body.appendChild(banner);
+      banner.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-consent]');
+        if (!b) return;
+        var v = b.getAttribute('data-consent'), before = getConsent();
+        setConsent(v);
+        banner.hidden = true;
+        if (v === 'yes') loadAnalytics(CFG.gaId);
+        else if (before === 'yes') { removeAnalyticsCookies(); location.reload(); }
+      });
+    };
+    var c = getConsent();
+    if (c === 'yes') loadAnalytics(CFG.gaId);
+    else if (c !== 'no') showBanner();
+    if (openLink) openLink.addEventListener('click', function (e) { e.preventDefault(); showBanner(); });
+  }
+
   /* Galleries: previous/next buttons scroll by one card */
   $all('[data-gallery]').forEach(function (g) {
     var track = $('.gallery-track', g), prev = $('[data-prev]', g), next = $('[data-next]', g);
@@ -182,11 +236,21 @@
     }
     Object.keys(z.hidden || {}).forEach(function (k) { add(k, z.hidden[k]); });
 
-    // Human-readable camp date instead of the internal id
+    // Camp date: Manuela's own format in its Zoho field, readable text in the description
     var sel = form.querySelector('[data-camp-select]');
     if (sel && sel.value) {
       var o = sel.options[sel.selectedIndex];
-      data.date = (o.getAttribute('data-label') || o.textContent) + (o.getAttribute('data-wait') === '1' ? ' (Warteliste)' : '');
+      var wait = o.getAttribute('data-wait') === '1';
+      if (z.campDateField && o.getAttribute('data-zoho')) add(z.campDateField, (wait ? 'WARTELISTE ' : '') + o.getAttribute('data-zoho'));
+      if (z.campDateField && sel.value === 'interesse') add(z.campDateField, 'Interesse nächstes Camp');
+      data.date = (o.getAttribute('data-label') || o.textContent) + (wait ? ' (Warteliste)' : '');
+    }
+    if (z.childNamesField && data.children && data.children.length) {
+      add(z.childNamesField, data.children.map(function (c) { return c.name; }).join(', '));
+    }
+    if (z.leadSource) {
+      var ls = z.leadSource.byInterest || {};
+      add(z.leadSource.field, ls[data.interest] || ls._default || '');
     }
     var lines = [];
     Object.keys(data).forEach(function (k) {

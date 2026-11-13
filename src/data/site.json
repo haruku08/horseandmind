@@ -48,10 +48,14 @@
   ],
   "timezone": "Europe/Zurich",
   "zoho": {
-    "_help": "Bridge until our own booking API exists (apiBase empty). Copy 'action' and the hidden inputs (xnQsjsdp, xmIwtLD, actionType, zc_gad …) from the old site's Zoho webform HTML. 'fields' maps our form fields to Zoho field names; everything else goes into descriptionField. Leave 'action' empty to switch a form off.",
+    "_help": "Bridge to Zoho CRM (EU data centre) while apiBase is \"\". Keys and field usage copied from the old site's webform (13 Nov 2026) – the keys are public (they sit in the page source). Manuela's field usage: Lead Source = offer, Lead Status = \"Mini-Camp\" for camps, Fax = camp date (prefix WARTELISTE when full), Twitter = child's name, Description = everything else. Leave 'action' empty to switch a form off.",
     "contact": {
-      "action": "",
+      "action": "https://crm.zoho.eu/crm/WebToLeadForm",
       "hidden": {
+        "xnQsjsdp": "60ac0ac0397c07c52d9395ae5b98b597bc29b9c2f22cdb68217fec9df0337c67",
+        "zc_gad": "",
+        "xmIwtLD": "a755fefd35500d888f08a4215c286fed2d3ae1e82cd23a2d77afecc86a631ddf",
+        "actionType": "TGVhZHM=",
         "returnURL": "https://horseandmind.ch/danke/"
       },
       "fields": {
@@ -60,12 +64,29 @@
         "email": "Email",
         "phone": "Mobile"
       },
-      "descriptionField": "Description"
+      "descriptionField": "Description",
+      "leadSource": {
+        "field": "Lead Source",
+        "byInterest": {
+          "coaching": "Web: Pferdegestütztes Coaching",
+          "kids": "Web: Pferdegestütztes Coaching",
+          "camp": "Web: Kids Mini Camp",
+          "reitpaedagogik": "Web: Reitpädagogik",
+          "wingwave": "Web: Wing Wave",
+          "_default": "Web: Pferdegestütztes Coaching"
+        }
+      }
     },
     "camp": {
-      "action": "",
+      "action": "https://crm.zoho.eu/crm/WebToLeadForm",
       "hidden": {
-        "returnURL": "https://horseandmind.ch/danke/"
+        "xnQsjsdp": "60ac0ac0397c07c52d9395ae5b98b597bc29b9c2f22cdb68217fec9df0337c67",
+        "zc_gad": "",
+        "xmIwtLD": "a755fefd35500d888f08a4215c286fed2d3ae1e82cd23a2d77afecc86a631ddf",
+        "actionType": "TGVhZHM=",
+        "returnURL": "https://horseandmind.ch/danke/",
+        "Lead Source": "Web: Kids Mini Camp",
+        "Lead Status": "Mini-Camp"
       },
       "fields": {
         "firstName": "First Name",
@@ -76,7 +97,13 @@
         "zip": "Zip Code",
         "city": "City"
       },
-      "descriptionField": "Description"
+      "descriptionField": "Description",
+      "campDateField": "Fax",
+      "childNamesField": "Twitter"
     }
+  },
+  "analytics": {
+    "_help": "Google Analytics 4 (same property as the old site). Loaded only in production builds and only after the visitor accepts the cookie banner.",
+    "gaId": "G-RY5BHSBLTG"
   }
 }
