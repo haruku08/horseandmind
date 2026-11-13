@@ -13,6 +13,9 @@ concurrency:
 
 jobs:
   deploy:
+    # Skipped (not failed) until the repository variable SITE_ENV is set to staging or production
+    # together with the FTP secrets – see docs/go-live-plan.md.
+    if: ${{ vars.SITE_ENV == 'staging' || vars.SITE_ENV == 'production' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,13 +29,6 @@ jobs:
       # Repository variable SITE_ENV (Settings → Secrets and variables → Actions → Variables):
       #   staging     → every page noindex, robots.txt blocks crawlers (use while FTP_DIR points to staging)
       #   production  → indexable; set this together with FTP_DIR = live folder at go-live
-      - name: Check SITE_ENV
-        run: |
-          case "${{ vars.SITE_ENV }}" in
-            staging|production) echo "Building for ${{ vars.SITE_ENV }}" ;;
-            *) echo "::error::Set the repository variable SITE_ENV to 'staging' or 'production' first."; exit 1 ;;
-          esac
-
       - name: Build
         run: node build.mjs
         env:

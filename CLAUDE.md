@@ -19,7 +19,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 4. **Photos:** every `{{ph:Label|class}}` spot now has a photo from the old site (`src/assets/img/photos/<slug>.jpg`, alt texts in `photos.json`); swap in the owner's originals with the same file names when they arrive.
 4b. **Analytics:** Google Analytics 4 `G-RY5BHSBLTG` (site.json → analytics), only in production builds and only after consent in the cookie banner (`site.js`); footer link «Cookie-Einstellungen»; Datenschutz section `#analytics`.
 4c. **Team:** Manuela only (Rahel Deloof from the old site left out, owner's decision 13 Nov 2026).
-5. **Hosting/deploy:** GitHub repo (private) → GitHub Action builds and uploads `dist/` via FTP(S) to the existing host. Test on a staging subdomain first, then switch `FTP_DIR` to the live folder. Secrets needed: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR`.
+5. **Hosting/deploy:** GitHub repo (public since 13 Nov 2026, for free GitHub Pages) → GitHub Action builds and uploads `dist/` via FTP(S) to the existing host. Test on a staging subdomain first, then switch `FTP_DIR` to the live folder. Secrets needed: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR`.
 6. **Booking – direction agreed:** drop Bookly, Calendly and eventually Zoho. Build our own:
    - **1:1 sessions** (Erstgespräch, Coaching, Reitpädagogik): free slots read from **Manuela's Google Calendar** (free/busy), booking creates the event and sends the client a Google invite.
    - **Camps:** fixed dates with seat limits, waitlist when full.
@@ -80,7 +80,7 @@ Website:
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
 - [ ] Legal check of Impressum, Datenschutz (now incl. Google Analytics, Zoho EU, Calendly), AGB
 - [ ] Google Business Profile with Hegifeldstrasse 6B
-- [ ] Preview on GitHub Pages (`.github/workflows/pages.yml`, `BASE_PATH=/horseandmind`): enable Pages (Source: GitHub Actions; private repo needs GitHub Pro) and allow this branch in the github-pages environment
+- [x] Preview on GitHub Pages: https://haruku08.github.io/horseandmind/ (`.github/workflows/pages.yml`, `BASE_PATH=/horseandmind`). Repo is **public** since 13 Nov 2026. Pages deploys only from `main` → merge the work branch into `main` to update the preview. FTP deploy (`deploy.yml`) is skipped until `SITE_ENV` is set.
 - [ ] Hosting staging + switch: follow `docs/go-live-plan.md` (FTP secrets, `SITE_ENV`, staging subdomain, redirect test, Zoho test leads, backup, document-root switch, Search Console)
 
 Later (backend – replaces mock-api.js, same API + CRM functions):

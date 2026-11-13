@@ -2,12 +2,11 @@ name: Staging (GitHub Pages)
 
 # Builds the staging version (noindex, robots blocked, demo booking + CRM) and publishes it
 # on GitHub Pages under https://<owner>.github.io/<repo>/.
-# One-time setup: Settings → Pages → Source: "GitHub Actions". Pages on a private repo needs a
-# paid GitHub plan. To deploy from a branch other than the default one, allow it under
-# Settings → Environments → github-pages → Deployment branches.
+# Setup (done 13 Nov 2026): repo public, Settings → Pages → Source: "GitHub Actions".
+# GitHub only lets the default branch deploy to Pages, so the preview updates when main changes.
 on:
   push:
-    branches: [main, claude/fervent-lamport-g7u1yk]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
