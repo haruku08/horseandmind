@@ -1,30 +1,32 @@
 /* Horse & Mind – CRM. Phone first: bottom tabs on small screens, side tabs from 900px. */
-@font-face { font-family: "Eczar"; font-style: normal; font-weight: 500; font-display: swap; src: url("/assets/fonts/eczar-latin-500-normal.woff2") format("woff2"); }
-@font-face { font-family: "Eczar"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/eczar-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Fraunces"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/fraunces-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Ubuntu"; font-style: normal; font-weight: 700; font-display: swap; src: url("/assets/fonts/ubuntu-latin-700-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-600-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-700-normal.woff2") format("woff2"); }
 
 :root {
-  --bg: #F6F1E9;
-  --surface: #FFFDF9;
-  --line: #E6DACB;
-  --ink: #2B231D;
-  --ink-2: #5A4D42;
-  --muted: #7A6B5D;
+  --bg: #FAF7F5;
+  --surface: #FFFFFF;
+  --line: #E7E2E0;
+  --ink: #46285D;
+  --ink-2: #4D3B57;
+  --muted: #6D5F64;
   --accent: #8E4F24;
   --accent-ink: #FFFFFF;
-  --accent-soft: #F3E3CF;
-  --sage: #5F6B52;
-  --warn: #9B3426;
-  --warn-soft: #F7E1DC;
+  --accent-soft: #F7EFE9;
+  --sage: #5E8442;
+  --warn: #962F3A;
+  --warn-soft: #FDDDE0;
+  --shadow: 0 1px 2px rgba(70, 40, 93, .06), 0 14px 32px -14px rgba(70, 40, 93, .20);
 
   /* one spacing scale, one radius */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
-  --r: 12px;
+  --r: 9px;
   --tabs-h: 64px;
   --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --display: "Eczar", Georgia, serif;
+  --display: "Fraunces", Georgia, serif;
+  --logo: "Ubuntu", "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -52,7 +54,7 @@ p { margin: 0; }
   padding: calc(var(--s3) + env(safe-area-inset-top, 0px)) max(var(--s4), env(safe-area-inset-right, 0px)) var(--s3) max(var(--s4), env(safe-area-inset-left, 0px));
   background: var(--bg); border-bottom: 1px solid var(--line);
 }
-.a-brand { color: var(--ink); text-decoration: none; font-family: var(--display); font-weight: 600; letter-spacing: .06em; font-size: 17px; }
+.a-brand { color: var(--ink); text-decoration: none; font-family: var(--logo); font-weight: 700; letter-spacing: .03em; font-size: 16px; }
 .a-brand span { font-family: var(--font); font-size: 13px; color: var(--muted); font-weight: 600; letter-spacing: .04em; margin-left: var(--s1); }
 .a-top-actions { display: flex; align-items: center; gap: var(--s2); }
 .a-badge { font-size: 12px; font-weight: 700; color: var(--sage); border: 1px solid currentColor; border-radius: 999px; padding: 1px var(--s2); }
@@ -136,13 +138,13 @@ p { margin: 0; }
 .chip[aria-pressed="true"] span { color: var(--line); }
 
 /* lists */
-.list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); }
 .row {
   display: flex; align-items: center; gap: var(--s3); min-height: 64px; padding: var(--s3) var(--s4);
   color: inherit; text-decoration: none; border-top: 1px solid var(--line);
 }
 .row:first-child { border-top: 0; }
-.row:hover { background: #FBF6EE; }
+.row:hover { background: #F9F6FC; }
 .row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .row-main > span { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row-main > span.note-warn { white-space: normal; }
@@ -168,13 +170,13 @@ p { margin: 0; }
 .pill--abgesagt { background: transparent; color: var(--warn); box-shadow: inset 0 0 0 1px var(--warn-soft); }
 
 /* cards */
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
+.card { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: var(--r); padding: var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
 .card h2 + h2, .card .week + h2 { margin-top: var(--s3); }
 
 /* status steps */
 .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: var(--line); border-radius: var(--r); padding: 2px; }
 .steps button {
-  min-height: 44px; border: 0; border-radius: 10px; background: var(--surface); color: var(--ink-2);
+  min-height: 44px; border: 0; border-radius: 7px; background: var(--surface); color: var(--ink-2);
   font: 600 13px var(--font); cursor: pointer; padding: 0 var(--s1);
 }
 .steps button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
@@ -199,7 +201,7 @@ p { margin: 0; }
 .note-form .btn { align-self: flex-end; }
 textarea, input[type="search"], input[type="number"], input[type="date"], input[type="time"] {
   font: 15px var(--font); color: var(--ink); background: var(--surface);
-  border: 1px solid #CDBFAE; border-radius: 10px; padding: 10px var(--s3); min-height: 44px; max-width: 100%;
+  border: 1px solid #C8C0BD; border-radius: 7px; padding: 10px var(--s3); min-height: 44px; max-width: 100%;
 }
 textarea { resize: vertical; width: 100%; }
 .notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s3); }

@@ -51,7 +51,7 @@ Every push to `main` on GitHub builds the site and uploads it automatically (`.g
 
 **Text** – edit the page's `index.html` in `src/pages/…`. Header and footer live once in `src/layout.html`.
 
-**Colors, corners, fonts** – all set as variables at the top of `src/assets/css/site.css` (CRM: `admin.css`). Fonts: Eczar (titles) and Plus Jakarta Sans (text), self-hosted in `src/assets/fonts/`.
+**Colors, corners, fonts** – all set as variables at the top of `src/assets/css/site.css` (CRM: `admin.css`). Fonts: Ubuntu (logo), Fraunces (titles) and Plus Jakarta Sans (text), self-hosted in `src/assets/fonts/`. Surface style follows the Biings Design System (CC BY 4.0).
 
 ## Images
 
