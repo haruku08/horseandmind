@@ -1,0 +1,52 @@
+name: Staging (GitHub Pages)
+
+# Builds the staging version (noindex, robots blocked, demo booking + CRM) and publishes it
+# on GitHub Pages under https://<owner>.github.io/<repo>/.
+# One-time setup: Settings → Pages → Source: "GitHub Actions". Pages on a private repo needs a
+# paid GitHub plan. To deploy from a branch other than the default one, allow it under
+# Settings → Environments → github-pages → Deployment branches.
+on:
+  push:
+    branches: [main, claude/fervent-lamport-g7u1yk]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so the sitemap gets real <lastmod> dates
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build staging version
+        run: node build.mjs
+        env:
+          SITE_ENV: staging
+          BASE_PATH: /${{ github.event.repository.name }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

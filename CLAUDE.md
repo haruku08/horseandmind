@@ -53,7 +53,7 @@ src/static/                   .htaccess, robots.txt → site root
 .github/workflows/deploy.yml  build + FTP deploy on push to main
 ```
 
-Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). FAQ blocks (`<details class="faq"><summary>…</summary><div class="faq-a">…</div></details>`) become FAQPage schema. `[ALL CAPS]` placeholders are highlighted on the page. The build warns about todo boxes, placeholders and empty photo slots. `SITE_ENV=production` makes the site indexable; anything else = noindex + robots block (deploy requires the repo variable `SITE_ENV`).
+Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). FAQ blocks (`<details class="faq"><summary>…</summary><div class="faq-a">…</div></details>`) become FAQPage schema. `[ALL CAPS]` placeholders are highlighted on the page. The build warns about todo boxes, placeholders and empty photo slots. `SITE_ENV=production` makes the site indexable; anything else = noindex + robots block (deploy requires the repo variable `SITE_ENV`). `BASE_PATH=/sub` serves the site from a subfolder (GitHub Pages preview); links in HTML/CSS get the prefix, scripts use `HM_CONFIG.base`.
 
 Old-site inventory (plugins, Zoho field meaning, facts, photo sources): `docs/old-site.md`.
 
@@ -80,7 +80,8 @@ Website:
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
 - [ ] Legal check of Impressum, Datenschutz (now incl. Google Analytics, Zoho EU, Calendly), AGB
 - [ ] Google Business Profile with Hegifeldstrasse 6B
-- [ ] Deploy: FTP secrets, repo variable `SITE_ENV=staging`, staging subdomain; go-live = back up WordPress, `SITE_ENV=production` + live `FTP_DIR`, test redirects, Search Console + Bing
+- [ ] Preview on GitHub Pages (`.github/workflows/pages.yml`, `BASE_PATH=/horseandmind`): enable Pages (Source: GitHub Actions; private repo needs GitHub Pro) and allow this branch in the github-pages environment
+- [ ] Hosting staging + switch: follow `docs/go-live-plan.md` (FTP secrets, `SITE_ENV`, staging subdomain, redirect test, Zoho test leads, backup, document-root switch, Search Console)
 
 Later (backend – replaces mock-api.js, same API + CRM functions):
 - [ ] Durations for Coaching / Reitpädagogik in `site.json` services

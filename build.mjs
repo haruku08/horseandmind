@@ -35,6 +35,11 @@ const buildId = Date.now().toString(36);
 // SITE_ENV=production → indexable. Anything else (staging, local) → noindex everywhere,
 // robots.txt blocks all crawlers and Apache sends X-Robots-Tag, so test copies never land in Google.
 const ENV = process.env.SITE_ENV || 'development';
+
+// BASE_PATH (e.g. "/horseandmind") serves the site from a subfolder, as on GitHub Pages.
+// Root links in HTML (href/src/action) and CSS url()s get the prefix; scripts read it from HM_CONFIG.base.
+const BASE = (process.env.BASE_PATH || '').replace(/\/+$/, '');
+const withBase = (text) => (BASE ? text.replace(/(\s(?:href|src|action)=")\/(?!\/)/g, `$1${BASE}/`) : text);
 const PROD = ENV === 'production';
 
 // apiBase "mock": demo backend in the browser (src/assets/js/mock-api.js) plus example camp dates.
@@ -340,6 +345,7 @@ function lastmod(file) {
 const clientConfig = JSON.stringify({
   apiBase: site.apiBase, services: site.services, timezone: site.timezone, email: site.email, zoho: site.zoho,
   gaId: PROD && site.analytics ? site.analytics.gaId : null,
+  base: BASE,
   camps: upcoming.map((c) => ({ id: c.id, title: c.title, start: c.start, end: c.end, time: c.time, price: c.price, seats: c.seats ?? null, label: formatRange(c.start, c.end) }))
 }).replace(/</g, '\\u003c');
 
@@ -393,7 +399,7 @@ for (const { file, body, meta, rel, url } of pages) {
   const html = layouts[meta.layout || 'site'].replace(/\{\{(\w+)\}\}/g, (all, k) => (k in vars ? vars[k] : all));
   const dest = path.join(out, rel, 'index.html');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.writeFileSync(dest, html);
+  fs.writeFileSync(dest, withBase(html));
   if (/class="todo"/.test(body)) unfinished.push(url);
   for (const m of body.matchAll(TBD)) tbd.push(`${url} ${m[0]}`);
   if (!meta.noindex) indexed.push({ url, meta, lastmod: lastmod(file) });
@@ -431,6 +437,14 @@ const llms = [
   })
 ].join('\n');
 fs.writeFileSync(path.join(out, 'llms.txt'), llms);
+
+if (BASE) {
+  for (const f of walk(path.join(out, 'assets/css'))) {
+    fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/url\("\/(?!\/)/g, `url("${BASE}/`));
+  }
+}
+// GitHub Pages serves /404.html for unknown paths (Apache uses the ErrorDocument in .htaccess)
+if (fs.existsSync(path.join(out, '404/index.html'))) fs.copyFileSync(path.join(out, '404/index.html'), path.join(out, '404.html'));
 
 if (!PROD) {
   fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');

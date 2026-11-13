@@ -4,6 +4,7 @@
   var CFG = window.HM_CONFIG || {};
   var API = (CFG.apiBase || '').replace(/\/$/, '');
   var TZ = CFG.timezone || 'Europe/Zurich';
+  var BASE = CFG.base || ''; // subfolder prefix when the site is not served from the domain root
 
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
@@ -77,7 +78,7 @@
       banner.className = 'consent-banner';
       banner.setAttribute('role', 'dialog');
       banner.setAttribute('aria-label', 'Cookies');
-      banner.innerHTML = '<p>Darf ich mit Google Analytics anonym messen, wie die Website genutzt wird? Dafür werden Cookies gesetzt. <a href="/datenschutz/#analytics">Mehr erfahren</a></p>' +
+      banner.innerHTML = '<p>Darf ich mit Google Analytics anonym messen, wie die Website genutzt wird? Dafür werden Cookies gesetzt. <a href="' + BASE + '/datenschutz/#analytics">Mehr erfahren</a></p>' +
         '<div class="consent-actions"><button type="button" class="btn btn--sm" data-consent="yes">Akzeptieren</button><button type="button" class="btn btn--sm btn--outline" data-consent="no">Ablehnen</button></div>';
       document.body.appendChild(banner);
       banner.addEventListener('click', function (e) {
@@ -126,7 +127,7 @@
       var cta = $('.band-action', el);
       var p = $('.band-info p:last-child', el);
       if (p) p.textContent = 'Neue Daten folgen bald – melde dein Interesse, dann erfährst du es zuerst.';
-      if (cta) cta.innerHTML = '<a class="btn btn--light" href="/kids/land-der-gefuehle/">Mehr zum Camp</a>';
+      if (cta) cta.innerHTML = '<a class="btn btn--light" href="' + BASE + '/kids/land-der-gefuehle/">Mehr zum Camp</a>';
     }
   });
 
@@ -381,7 +382,7 @@
           renderDays(); renderSlots();
         })
         .catch(function () {
-          elDays.innerHTML = '<span class="form-note">Die Zeiten konnten nicht geladen werden. <a href="/kontakt/">Schreib mir</a> und wir finden einen Termin.</span>';
+          elDays.innerHTML = '<span class="form-note">Die Zeiten konnten nicht geladen werden. <a href="' + BASE + '/kontakt/">Schreib mir</a> und wir finden einen Termin.</span>';
         });
     }
     renderServices(); load();
