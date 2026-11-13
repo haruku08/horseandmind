@@ -43,6 +43,45 @@
     window.matchMedia('(min-width: 835px)').addEventListener('change', function (m) { if (m.matches) setMenu(false); });
   }
 
+  /* Mega menu (desktop): opens on hover with a short delay, on keyboard focus and on first tap */
+  var desktop = window.matchMedia('(min-width: 835px)');
+  var megaItems = $all('[data-mega]');
+  var scrim = $('[data-mega-scrim]');
+  var openItem = null, openTimer = null, closeTimer = null;
+  function setOpen(item) {
+    if (openItem === item) return;
+    if (openItem) { openItem.classList.remove('is-open'); $('.nav-link', openItem).setAttribute('aria-expanded', 'false'); }
+    openItem = item;
+    if (item) { item.classList.add('is-open'); $('.nav-link', item).setAttribute('aria-expanded', 'true'); }
+    document.body.classList.toggle('mega-open', !!item);
+  }
+  megaItems.forEach(function (item) {
+    var link = $('.nav-link', item);
+    item.addEventListener('mouseenter', function () {
+      if (!desktop.matches) return;
+      clearTimeout(closeTimer); clearTimeout(openTimer);
+      openTimer = setTimeout(function () { setOpen(item); }, openItem ? 0 : 120);
+    });
+    item.addEventListener('mouseleave', function () {
+      if (!desktop.matches) return;
+      clearTimeout(openTimer);
+      closeTimer = setTimeout(function () { if (openItem === item) setOpen(null); }, 180);
+    });
+    item.addEventListener('focusin', function () { if (desktop.matches) setOpen(item); });
+    item.addEventListener('focusout', function (e) {
+      if (desktop.matches && !item.contains(e.relatedTarget)) setTimeout(function () { if (!item.contains(document.activeElement) && openItem === item) setOpen(null); }, 0);
+    });
+    // touch screens without hover: first tap opens the panel, second tap follows the link
+    link.addEventListener('click', function (e) {
+      if (desktop.matches && window.matchMedia('(hover: none)').matches && openItem !== item) { e.preventDefault(); setOpen(item); }
+    });
+  });
+  if (scrim) scrim.addEventListener('click', function () { setOpen(null); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && openItem) { var l = $('.nav-link', openItem); setOpen(null); l.focus(); }
+  });
+  desktop.addEventListener('change', function () { setOpen(null); });
+
   /* Cookie consent: Google Analytics loads only after "Akzeptieren" (production builds only) */
   var CONSENT_KEY = 'hm-consent';
   function getConsent() { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } }

@@ -302,22 +302,47 @@ function jsonldFor(url, meta, faqs) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 }
 
-// Section bar under the global nav (apple.com "local nav"): one per area of the site.
-const LOCAL_NAV = {
-  erwachsene: { title: 'Coaching', href: '/pferdeunterstuetztes-coaching/', links: [
-    ['Übersicht', '/pferdeunterstuetztes-coaching/'], ['Ruhe im Chaos', '/ruhe-im-chaos/'], ['Leadership & Team', '/pferdeunterstuetztes-coaching/leadership-team-coaching/'], ['Wingwave', '/wing-wave/'], ['Epigenetik', '/epigenetik/']] },
-  kids: { title: 'Kids', href: '/kids/', links: [
-    ['Übersicht', '/kids/'], ['Einzelbegleitung', '/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/'], ['Reitpädagogik', '/kids/reitpaedagogik/'], ['Kids Camp', '/kids/land-der-gefuehle/']] },
-  ueber: { title: 'Über mich', href: '/ueber-uns/', links: [
-    ['Manuela', '/ueber-uns/'], ['Kursort', '/ueber-uns/kursort-binzenloo-winterthur/'], ['Partner', '/ueber-uns/meine-partner/'], ['Kontakt', '/kontakt/']] }
-};
-LOCAL_NAV.camps = LOCAL_NAV.kids;
+// Main navigation with mega menus (apple.com-style flyouts). Items with `links` open a full-width
+// panel: every page of that area with a one-line description, plus a photo that links to the area.
+const MENU = [
+  { key: 'erwachsene', label: 'Erwachsene', href: '/pferdeunterstuetztes-coaching/', photo: 'coaching', photoAlt: 'Manuela mit zwei Pferden auf einem Feldweg', links: [
+    ['Pferdegestütztes Coaching', '/pferdeunterstuetztes-coaching/', 'Das Pferd als Co-Coach – Überblick'],
+    ['Ruhe im Chaos', '/ruhe-im-chaos/', 'Für Eltern neurodivergenter Kinder'],
+    ['Leadership & Team', '/pferdeunterstuetztes-coaching/leadership-team-coaching/', 'Für Leader, Teams und Familien'],
+    ['Wingwave', '/wing-wave/', 'Kurzzeitcoaching bei Stress und Blockaden'],
+    ['Epigenetik', '/epigenetik/', 'Was du selbst in der Hand hast']] },
+  { key: 'kids', label: 'Kids', href: '/kids/', photo: 'kinder-mit-pferden', photoAlt: 'Zwei Mädchen lachen mit zwei Pferden', links: [
+    ['Alle Kids-Angebote', '/kids/', 'Was passt zu deinem Kind?'],
+    ['In der Ruhe liegt die Kraft', '/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/', 'Einzelbegleitung mit den Pferden'],
+    ['Reitpädagogik', '/kids/reitpaedagogik/', 'Ab 5 Jahren, in kleinen Gruppen'],
+    ['Kids Camp', '/kids/land-der-gefuehle/', 'Das Land der Gefühle – Daten und Anmeldung']] },
+  { key: 'camps', label: 'Camps', href: '/kids/land-der-gefuehle/' },
+  { key: 'ueber', label: 'Über mich', href: '/ueber-uns/', photo: 'manuela-mit-pferd', photoAlt: 'Manuela Pattynama mit zwei Pferden', links: [
+    ['Manuela Pattynama', '/ueber-uns/', 'Mein Weg zu den Pferden'],
+    ['Kursort Binzenloo', '/ueber-uns/kursort-binzenloo-winterthur/', 'Der Biohof bei Winterthur'],
+    ['Partner', '/ueber-uns/meine-partner/', 'Mit wem ich zusammenarbeite']] },
+  { key: 'kontakt', label: 'Kontakt', href: '/kontakt/' }
+];
 
-function localNav(url, meta) {
-  const ln = LOCAL_NAV[meta.nav];
-  if (!ln || meta.layout) return '';
-  const links = ln.links.map(([label, href]) => `<a href="${href}"${href === url ? ' aria-current="page"' : ''}>${esc(label)}</a>`).join('');
-  return `<nav class="lnav" aria-label="${esc(ln.title)}"><div class="wrap"><a class="lnav-title" href="${ln.href}">${esc(ln.title)}</a><div class="lnav-links">${links}</div><a class="btn btn--sm" href="/termin/">Erstgespräch</a></div></nav>`;
+function navItems(url, meta) {
+  const current = (k) => (meta.nav === k || (k === 'kontakt' && url === '/kontakt/') ? ' aria-current="page"' : '');
+  return MENU.map((m) => {
+    if (!m.links) return `<div class="nav-item"><a class="nav-link" href="${m.href}"${current(m.key)}>${esc(m.label)}</a></div>`;
+    const links = m.links.map(([label, href, desc]) =>
+      `<li><a href="${href}"${href === url ? ' aria-current="page"' : ''}><span class="mega-title">${esc(label)}</span><span class="mega-desc">${esc(desc)}</span></a></li>`).join('');
+    const photoFile = ['jpg', 'webp', 'jpeg', 'png'].map((e) => `${m.photo}.${e}`).find((f) => fs.existsSync(path.join(PHOTO_DIR, f)));
+    const feature = photoFile
+      ? `<a class="mega-feature" href="${m.href}" tabindex="-1" aria-hidden="true"><img src="/assets/img/photos/${photoFile}" alt="" loading="lazy" decoding="async"><span>${esc(m.label)} entdecken</span></a>`
+      : '';
+    return `<div class="nav-item has-mega" data-mega>
+      <a class="nav-link" href="${m.href}"${current(m.key)} aria-haspopup="true" aria-expanded="false">${esc(m.label)}</a>
+      <div class="mega" id="mega-${m.key}"><div class="wrap mega-inner">
+        <p class="mega-kicker">${esc(m.label)}</p>
+        <ul class="mega-links">${links}</ul>
+        ${feature}
+      </div></div>
+    </div>`;
+  }).join('\n      ');
 }
 
 // Breadcrumb trail in the footer (the same path as the BreadcrumbList schema)
@@ -390,7 +415,7 @@ for (const { file, body, meta, rel, url } of pages) {
     jsonld: jsonldFor(url, meta, faqs),
     config_json: clientConfig,
     demo_bar: demoBar,
-    lnav: localNav(url, meta),
+    nav_items: navItems(url, meta),
     crumbs: crumbTrail(url, meta),
     mock_script: mockScript,
     content
