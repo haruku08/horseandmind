@@ -82,12 +82,13 @@
   });
   desktop.addEventListener('change', function () { setOpen(null); });
 
-  /* Cookie consent: Google Analytics loads only after "Akzeptieren" (production builds only) */
+  /* Cookie consent: banner wherever analytics is configured; Google Analytics itself loads only
+     after "Akzeptieren" and only in production builds (CFG.gaId is null on previews) */
   var CONSENT_KEY = 'hm-consent';
   function getConsent() { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } }
   function setConsent(v) { try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { /* private mode: ask again next time */ } }
   function loadAnalytics(id) {
-    if (window.gtag) return;
+    if (!id || window.gtag) return;
     var s = document.createElement('script');
     s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
     document.head.appendChild(s);
@@ -107,7 +108,7 @@
       }
     });
   }
-  if (CFG.gaId) {
+  if (CFG.consentBanner) {
     var openLink = $('[data-consent-open]');
     if (openLink) openLink.hidden = false;
     var banner = null;
@@ -117,7 +118,7 @@
       banner.className = 'consent-banner';
       banner.setAttribute('role', 'dialog');
       banner.setAttribute('aria-label', 'Cookies');
-      banner.innerHTML = '<p>Darf ich mit Google Analytics anonym messen, wie die Website genutzt wird? Dafür werden Cookies gesetzt. <a href="' + BASE + '/datenschutz/#analytics">Mehr erfahren</a></p>' +
+      banner.innerHTML = '<p><strong>Cookies</strong><br>Darf ich mit Google Analytics messen, wie die Website genutzt wird? Dafür werden Cookies gesetzt – nur mit deiner Einwilligung. <a href="' + BASE + '/cookies/">Cookie-Richtlinie</a></p>' +
         '<div class="consent-actions"><button type="button" class="btn btn--sm" data-consent="yes">Akzeptieren</button><button type="button" class="btn btn--sm btn--outline" data-consent="no">Ablehnen</button></div>';
       document.body.appendChild(banner);
       banner.addEventListener('click', function (e) {
@@ -133,7 +134,12 @@
     var c = getConsent();
     if (c === 'yes') loadAnalytics(CFG.gaId);
     else if (c !== 'no') showBanner();
-    if (openLink) openLink.addEventListener('click', function (e) { e.preventDefault(); showBanner(); });
+    $all('[data-consent-open]').forEach(function (l) { l.hidden = false; l.addEventListener('click', function (e) { e.preventDefault(); showBanner(); }); });
+    // the cookie page shows the current choice
+    $all('[data-consent-state]').forEach(function (el) {
+      var c = getConsent();
+      el.textContent = c === 'yes' ? 'Du hast Google Analytics zugestimmt.' : c === 'no' ? 'Du hast Google Analytics abgelehnt.' : 'Du hast noch nicht entschieden.';
+    });
   }
 
   /* Galleries: previous/next buttons scroll by one card */

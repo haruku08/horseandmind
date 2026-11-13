@@ -369,7 +369,8 @@ function lastmod(file) {
 
 const clientConfig = JSON.stringify({
   apiBase: site.apiBase, services: site.services, timezone: site.timezone, email: site.email, zoho: site.zoho,
-  gaId: PROD && site.analytics ? site.analytics.gaId : null,
+  gaId: PROD && site.analytics ? site.analytics.gaId : null,   // Analytics only loads on the live site
+  consentBanner: !!site.analytics,                             // the banner also shows on previews
   base: BASE,
   camps: upcoming.map((c) => ({ id: c.id, title: c.title, start: c.start, end: c.end, time: c.time, price: c.price, seats: c.seats ?? null, label: formatRange(c.start, c.end) }))
 }).replace(/</g, '\\u003c');
