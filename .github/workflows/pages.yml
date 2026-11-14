@@ -34,6 +34,7 @@ jobs:
         run: node build.mjs
         env:
           SITE_ENV: staging
+          API_BASE: mock   # the preview always shows the demo booking + CRM
           BASE_PATH: /${{ github.event.repository.name }}
 
       - uses: actions/upload-pages-artifact@v3

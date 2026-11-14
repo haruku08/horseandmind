@@ -35,10 +35,10 @@ jobs:
           SITE_ENV: ${{ vars.SITE_ENV }}
 
       # Repository secrets (Settings → Secrets and variables → Actions):
-      #   FTP_SERVER    e.g. ftp.horseandmind.ch
-      #   FTP_USERNAME
+      #   FTP_SERVER    ftp.horseandmind.ch (unaxus.ch, cPanel)
+      #   FTP_USERNAME  cPanel FTP account incl. @horseandmind.ch, its directory = target folder
       #   FTP_PASSWORD
-      #   FTP_DIR       target folder ending in /, e.g. /staging/ first, later /public_html/ or /httpdocs/
+      #   FTP_DIR       ./ (relative to the FTP account's directory, ending in /); ./new/ during go-live step 2
       - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:

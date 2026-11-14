@@ -43,6 +43,8 @@ const withBase = (text) => (BASE ? text.replace(/(\s(?:href|src|action)=")\/(?!\
 const PROD = ENV === 'production';
 
 // apiBase "mock": demo backend in the browser (src/assets/js/mock-api.js) plus example camp dates.
+// API_BASE overrides site.json (GitHub Pages sets API_BASE=mock so the preview keeps the demo).
+if (process.env.API_BASE !== undefined) site.apiBase = process.env.API_BASE;
 const MOCK = site.apiBase === 'mock';
 if (MOCK && PROD) throw new Error('site.json apiBase is "mock" – the demo backend must not go live. Set a real apiBase (or "" for Zoho) first.');
 const camps = MOCK

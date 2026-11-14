@@ -1,6 +1,6 @@
 # Go-live plan: from staging to the shared hosting
 
-Status 13 Nov 2026. The old WordPress site stays online and untouched until step 4.
+Status 14 Nov 2026. Hosting: unaxus.ch (cPanel). The old WordPress site stays online and untouched until step 4.
 
 ## Overview
 
@@ -24,19 +24,18 @@ Email (info@horseandmind.ch) and DNS are not touched at any step – only the we
 - Does **not** test: redirects and `.htaccess` (Pages is not Apache), Zoho forms, Google Analytics.
 - Goal: Manuela reads every page and lists corrections; fill the `[PLACEHOLDER]` facts (prices, durations, UID, Starlett).
 
-## 2. Prepare the hosting
+## 2. Prepare the hosting (unaxus.ch, cPanel)
 
-What we need to find out first (the old site runs on Apache with PHP 8.3; the provider is still unknown):
-- Which provider and panel (cPanel, Plesk, own panel)? Login for you, FTP/FTPS access for the deploy.
-- Can the panel change a domain's **document root** (the folder a domain points to)? This decides the switch method in step 4.
+Hosting: **unaxus.ch**, managed hosting with **cPanel** (Apache). Login: myunaxus.com → Produkte → ⋯ next to the hosting package → Details anzeigen → **cPanel Login** (left menu). The main domain's folder is `public_html` (WordPress lives there now). cPanel cannot change the main domain's folder, so the switch uses method B (step 4).
 
-Then:
-1. Create the subdomain **staging.horseandmind.ch** with its own folder, e.g. `/staging/`. Turn on HTTPS (Let's Encrypt in the panel) and, if the panel offers it, password protection for the folder.
-2. In GitHub (Settings → Secrets and variables → Actions):
-   - Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_DIR` = `/staging/` (with trailing slash, path as the FTP account sees it).
+1. **Subdomain:** cPanel → *Domains* (older cPanel: *Subdomains*) → create `staging.horseandmind.ch`. Set the document root **outside** `public_html`, e.g. `staging.horseandmind.ch` (next to `public_html`, not inside it). Inside `public_html` the WordPress `.htaccess` would also apply to the staging folder and spoil the redirect test.
+2. **HTTPS:** cPanel → *SSL/TLS Status* → tick the subdomain → *Run AutoSSL* (free Let's Encrypt certificate). If AutoSSL is missing, ask unaxus support (some entry packages charge for SSL).
+3. **Optional password:** cPanel → *Directory Privacy* → the staging folder → password protection. Good for privacy, but Claude's tests then need the password. Without it the site is still noindex.
+4. **FTP account for the deploy:** cPanel → *FTP Accounts* → new account, e.g. `deploy-staging@horseandmind.ch`, strong password, **directory = the staging folder** from step 1. This account can only write there, so the WordPress site is safe.
+5. **GitHub** (Settings → Secrets and variables → Actions):
+   - Secrets: `FTP_SERVER` = `ftp.horseandmind.ch` (if that does not connect: the server name from cPanel's right column «Allgemeine Informationen» / unaxus welcome email), `FTP_USERNAME` = the full account name incl. `@horseandmind.ch`, `FTP_PASSWORD`, `FTP_DIR` = `./` (the account already starts in the staging folder).
    - Variable: `SITE_ENV` = `staging`.
-3. In `site.json` set `apiBase` to `""` so the forms send to Zoho (the demo backend is only for previews). Claude does this.
-4. Merge the branch into `main` → the deploy workflow builds and uploads. Claude checks the run log.
+6. Claude sets `apiBase` to `""` in `site.json` (forms → Zoho; the GitHub Pages preview keeps the demo via `API_BASE=mock` in `pages.yml`), merges into `main` and checks the deploy run log.
 
 ## 3. Test on staging.horseandmind.ch
 
@@ -54,21 +53,22 @@ You / Manuela:
 
 ## 4. Switch (go-live)
 
-Pick a quiet weekday morning, not during a camp sign-up rush. About one hour.
+Pick a quiet weekday morning, not during a camp sign-up rush. About one hour, about one minute of downtime.
 
-1. **Back up WordPress**: full file download (FTP or the panel's backup) **and** a database export (phpMyAdmin → Export). Keep both for at least 3 months.
-2. Upload the new site to a **new folder**, e.g. `/new/`: set `FTP_DIR` = `/new/`, `SITE_ENV` = `production` → run the deploy (production build refuses the demo backend, so the forms go to Zoho).
-3. Switch, depending on the panel:
-   - **A – document root can be changed (preferred):** point horseandmind.ch from the WordPress folder to `/new/`. Takes effect in minutes; WordPress stays untouched next to it.
-   - **B – document root is fixed:** move the WordPress files into a subfolder `/wp-old/` (or delete them after the backup) and upload the new site into the root folder. Make sure WordPress's own `.htaccess` is replaced by ours. A few minutes of downtime.
-4. **Smoke test right after** (Claude): home, Kids, camp page, booking page, one form → Zoho, redirect test against the live domain, `robots.txt` allows crawling, no `noindex` anywhere, cookie banner appears and Analytics loads after «Akzeptieren».
-5. **Google Search Console** (needs your Google account): verify the domain, submit `https://horseandmind.ch/sitemap.xml`, request indexing of the homepage. Same in Bing Webmaster Tools.
-6. Update `FTP_DIR` in GitHub to the live folder for all future deploys.
+1. **Back up WordPress:** cPanel → *Backup* (or *Backup Wizard*) → download a **Home Directory** backup **and** the **MySQL database** backup (or phpMyAdmin → Export). Keep both for at least 3 months, also outside the hosting.
+2. **Upload the new site next to WordPress:** cPanel → *FTP Accounts* → new account `deploy@horseandmind.ch` with directory `public_html`. In GitHub: change `FTP_USERNAME`/`FTP_PASSWORD` to this account, `FTP_DIR` = `./new/`, `SITE_ENV` = `production` → run the deploy (the production build refuses the demo backend, so the forms go to Zoho). WordPress keeps running; the new files are in `public_html/new/`.
+3. **Switch (method B, in cPanel's File Manager):**
+   - Create `public_html/wp-old/` and move **all** WordPress files and folders into it (`wp-admin`, `wp-content`, `wp-includes`, `wp-*.php`, `index.php`, `.htaccess`, …) – everything except `new/` and `wp-old/`. Show hidden files (Settings → «Show Hidden Files») so `.htaccess` moves too.
+   - Move the **contents** of `public_html/new/` (incl. our `.htaccess` and `.ftp-deploy-sync-state.json`) up into `public_html/`, delete the empty `new/`.
+   - Lock the old site: put a `.htaccess` with the single line `Require all denied` into `public_html/wp-old/`.
+4. GitHub: `FTP_DIR` = `./` – all future deploys go straight to `public_html`.
+5. **Smoke test right after** (Claude): home, Kids, camp page, booking page, one form → Zoho, redirect test against the live domain, `robots.txt` allows crawling, no `noindex` anywhere, cookie banner appears and Analytics loads after «Akzeptieren». cPanel → *SSL/TLS Status*: horseandmind.ch and www have a valid certificate.
+6. **Google Search Console** (needs your Google account): verify the domain, submit `https://horseandmind.ch/sitemap.xml`, request indexing of the homepage. Same in Bing Webmaster Tools.
+7. Delete the FTP account `deploy-staging` and the staging subdomain once nobody needs them.
 
 ### Rollback
 
-- Method A: point the document root back to the WordPress folder – minutes.
-- Method B: move `/wp-old/` back (or restore the backup) – 15–30 minutes.
+- In File Manager: move the new files into a folder `new-site/`, remove the `Require all denied` file and move the contents of `wp-old/` back into `public_html` – about 5 minutes. Worst case: restore the cPanel backup – 15–30 minutes.
 - Either way the old site comes back exactly as before; Zoho keeps every lead it received.
 
 ## 5. Aftercare (4 weeks)
@@ -84,8 +84,7 @@ Own booking backend (Supabase, Frankfurt) + Google Calendar + emails, then the Z
 
 ## What Claude needs from you
 
-1. GitHub Pro (or tell me to use another free preview) and the two one-time Pages settings above.
-2. Name of the hosting provider and whether the document root can be changed.
-3. The staging subdomain + the 4 FTP secrets and `SITE_ENV` in GitHub.
-4. Manuela's corrections and sign-off; a date for the switch.
-5. Access to Google Search Console (or do steps 5 yourself with the guide above).
+1. ~~Hosting provider~~ – unaxus.ch, cPanel.
+2. Step 2: the staging subdomain with HTTPS, the FTP account, the 4 secrets and `SITE_ENV` in GitHub – then tell Claude «staging ready».
+3. Manuela's corrections and sign-off; a date for the switch.
+4. Access to Google Search Console (or do step 4.6 yourself with the guide above).
