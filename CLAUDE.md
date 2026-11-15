@@ -24,7 +24,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
    - **1:1 sessions** (Erstgespräch, Coaching, Reitpädagogik): free slots read from **Manuela's Google Calendar** (free/busy), booking creates the event and sends the client a Google invite.
    - **Camps:** fixed dates with seat limits, waitlist when full.
    - **Mini-CRM** instead of Zoho: contacts, children (linked to parent), bookings with status (Neu → Kontaktiert → Gebucht → Bezahlt → Abgeschlossen), notes, CSV export, private admin page usable on phone. Each form may have its own fields (store extras in a flexible `details` JSON on the booking) – the owner currently misuses Zoho's ~10 free custom fields, this is a main reason to move.
-   - Backend idea: **Supabase (EU region, Frankfurt)** for DB, auth and edge functions (Supabase is connected in claude.ai), or Cloudflare Workers. Secrets (Google, DB) must never be in the static site.
+   - **Backend (15 Nov 2026, owner's decision): own MySQL database at unaxus (cPanel) + small PHP API on the same host**, not on AWS/Supabase (Supabase Zurich was offered; owner wants it on own hosting). This reverses the earlier «no PHP» call – so: API outside the web root where possible, prepared statements only, admin login with 2FA, secrets in a config file outside `public_html`, rate limiting, nightly DB backup. Secrets (Google, DB) must never be in the static site.
    - Confirmation/reminder emails via a sending service (e.g. Resend).
    - Not decided yet: payments online or not.
    - **Until our backend exists ("website only" phase):** contact and camp forms post to the existing **Zoho CRM webform** (`site.json` → `zoho`, keys still to copy from the old site), Erstgespräch via Calendly. Zoho redirects to `/danke/`.
@@ -32,7 +32,7 @@ Rebuild of **horseandmind.ch**, the website of Manuela Pattynama (pferdegestütz
 
 ## Options considered and set aside
 
-- **PHP on the shared host** for the booking backend – dropped over security/maintenance concerns; use serverless functions instead.
+- ~~PHP on the shared host~~ – first dropped over security/maintenance concerns; **chosen after all on 15 Nov 2026** (data on own hosting). Supabase/Workers set aside instead.
 - **Pure React app** – rejected: a browser-only app can't hold API keys; a static site plus small server functions is faster and better for SEO.
 - **Zoho Bookings / keep Calendly** – would work with Zoho CRM, but the owner wants one simple system of their own.
 - **Keep Zoho via webform or API** – possible (the free edition does include API access), but its field limits are the problem, so it gets replaced by the mini-CRM. Zoho stays running until the import is done.
