@@ -395,7 +395,7 @@ const pages = walk(pagesDir).filter((f) => f.endsWith('.html')).map((file) => {
   if (!m) throw new Error(`Missing <!--meta {...} --> in ${file}`);
   const rel = path.relative(pagesDir, path.dirname(file)).split(path.sep).join('/');
   return { file, raw, body: raw.slice(m[0].length), meta: JSON.parse(m[1]), rel, url: '/' + (rel ? rel + '/' : '') };
-});
+}).filter((p) => MOCK || p.meta.layout !== 'admin'); // the CRM is demo-only until the real backend exists
 const crumb = (t) => t.split(' | ')[0].split(' – ')[0];
 const pageTitles = new Map(pages.map((p) => [p.url, crumb(p.meta.title)]));
 

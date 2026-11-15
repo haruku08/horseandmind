@@ -280,7 +280,8 @@
       input.type = 'hidden'; input.name = name; input.value = value;
       post.appendChild(input);
     }
-    Object.keys(z.hidden || {}).forEach(function (k) { add(k, z.hidden[k]); });
+    // Zoho sends the visitor back to /danke/ on the site they came from (staging stays on staging)
+    Object.keys(z.hidden || {}).forEach(function (k) { add(k, k === 'returnURL' && /^https?:$/.test(location.protocol) ? location.origin + BASE + '/danke/' : z.hidden[k]); });
 
     // Camp date: Manuela's own format in its Zoho field, readable text in the description
     var sel = form.querySelector('[data-camp-select]');

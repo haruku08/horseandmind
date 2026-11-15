@@ -28,7 +28,7 @@
     "https://www.instagram.com/horseandmind",
     "https://www.facebook.com/horseandmind.ch"
   ],
-  "apiBase": "mock",
+  "apiBase": "",
   "services": [
     {
       "id": "erstgespraech",
