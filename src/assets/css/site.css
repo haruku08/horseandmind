@@ -131,7 +131,9 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-family: var(--display); font-wei
   border-bottom: 1px solid rgba(38, 35, 24, .08);
 }
 .gnav > .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.logo { font-family: var(--logo); font-weight: 700; font-size: 18px; letter-spacing: .03em; color: var(--ink); white-space: nowrap; }
+.logo { font-family: var(--logo); font-weight: 700; font-size: 18px; letter-spacing: .03em; color: var(--ink); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; }
+.logo-mark { height: 34px; width: auto; flex: none; color: inherit; }
+@media (max-width: 480px) { .logo { font-size: 16px; gap: 8px; } .logo-mark { height: 28px; } }
 .logo:hover { text-decoration: none; }
 .logo-light { font-weight: 400; }
 .nav { display: flex; align-items: stretch; gap: 30px; font-size: 14px; height: 100%; }
@@ -470,13 +472,14 @@ select { max-width: 100%; }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; list-style: none; margin: 0 0 20px; padding: 0 0 14px; border-bottom: 1px solid var(--line); }
 .crumbs li + li::before { content: "\203A"; margin-right: 6px; color: var(--muted); }
 .crumbs [aria-current] { color: var(--muted); }
-.fcols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding-bottom: 24px; }
+.fcols { display: grid; grid-template-columns: 120px repeat(4, minmax(0, 1fr)); gap: 24px; padding-bottom: 24px; }
+.fbrand img { display: block; width: 104px; height: 104px; }
 .fcols h2 { font-family: var(--text); font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: 0; margin-bottom: 8px; }
 .fcols ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .fbottom { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
 .fbottom nav { display: flex; flex-wrap: wrap; gap: 4px 0; }
 .fbottom nav a + a::before { content: "|"; color: var(--line); margin: 0 10px; }
-@media (max-width: 734px) { .fcols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 734px) { .fcols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fbrand { grid-column: 1 / -1; } .fbrand img { width: 88px; height: 88px; } }
 
 /* ---------- Biings effects ---------- */
 /* gradient titles: card titles and headlines marked .is-gradient */

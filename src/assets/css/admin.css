@@ -64,7 +64,9 @@ p { margin: 0; }
 /* ---------- brand ---------- */
 .a-brand { color: #FFF; text-decoration: none; font-family: var(--logo); font-weight: 700; letter-spacing: .03em; font-size: 15px; white-space: nowrap; }
 .a-brand .logo-light { font-weight: 400; }
-.a-brand span:not(.logo-light) { font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--rose); margin-left: 6px; }
+.a-brand { display: inline-flex; align-items: center; gap: 8px; }
+.a-brand .logo-mark { height: 28px; width: auto; flex: none; color: var(--rose); }
+.a-brand > span:not(.logo-text) { font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--rose); margin-left: 6px; }
 .a-badge { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: #E8C4BD; border: 1px solid rgba(232, 196, 189, .5); border-radius: 999px; padding: 1px var(--s2); }
 
 /* ---------- top bar (phones: dark with brand; desktop: light toolbar) ---------- */
@@ -115,7 +117,7 @@ p { margin: 0; }
     position: fixed; inset: 0 auto 0 0; width: var(--side-w); z-index: 6;
     padding: var(--s5) var(--s3); background: var(--dark);
   }
-  .a-side > .a-brand { display: block; padding: 0 var(--s3); }
+  .a-side > .a-brand { display: flex; padding: 0 var(--s3); }
   .a-side-foot { display: block; margin-top: auto; padding: 0 var(--s3); }
   .a-tabs {
     position: static; height: auto; padding: 0; background: none; border: 0;

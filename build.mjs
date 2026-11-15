@@ -46,6 +46,8 @@ const PROD = ENV === 'production';
 // API_BASE overrides site.json (GitHub Pages sets API_BASE=mock so the preview keeps the demo).
 if (process.env.API_BASE !== undefined) site.apiBase = process.env.API_BASE;
 const MOCK = site.apiBase === 'mock';
+// Line drawing from the logo (horse + profile), inlined in the header so it takes the text colour.
+const LOGO_MARK = fs.readFileSync(path.join(src, 'assets/img/logo/horseandmind-mark.svg'), 'utf8').trim();
 // Camp price from camps.json; while it is not confirmed (price null) a placeholder shows.
 const campPrice = (c) => (c.price ? `CHF ${c.price}` : '[PREIS CAMP]');
 if (MOCK && PROD) throw new Error('site.json apiBase is "mock" – the demo backend must not go live. Set a real apiBase (or "" for Zoho) first.');
@@ -409,6 +411,7 @@ for (const { file, body, meta, rel, url } of pages) {
   const faqs = faqsIn(content);
   const navKeys = ['erwachsene', 'kids', 'camps', 'ueber'];
   const vars = {
+    logo_mark: LOGO_MARK,
     title: esc(meta.title),
     description: esc(meta.description || ''),
     canonical: site.siteUrl + url,
