@@ -4,6 +4,7 @@
 @font-face { font-family: "Plus Jakarta Sans"; font-weight: 400; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-weight: 600; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-600-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-weight: 700; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Ubuntu"; font-weight: 400; font-display: swap; src: url("/assets/fonts/ubuntu-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Ubuntu"; font-weight: 700; font-display: swap; src: url("/assets/fonts/ubuntu-latin-700-normal.woff2") format("woff2"); }
 
 :root {
@@ -62,7 +63,8 @@ p { margin: 0; }
 
 /* ---------- brand ---------- */
 .a-brand { color: #FFF; text-decoration: none; font-family: var(--logo); font-weight: 700; letter-spacing: .03em; font-size: 15px; white-space: nowrap; }
-.a-brand span { font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--rose); margin-left: 6px; }
+.a-brand .logo-light { font-weight: 400; }
+.a-brand span:not(.logo-light) { font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--rose); margin-left: 6px; }
 .a-badge { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: #E8C4BD; border: 1px solid rgba(232, 196, 189, .5); border-radius: 999px; padding: 1px var(--s2); }
 
 /* ---------- top bar (phones: dark with brand; desktop: light toolbar) ---------- */

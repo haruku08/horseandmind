@@ -7,6 +7,7 @@
 
 @font-face { font-family: "Fraunces"; font-style: normal; font-weight: 500; font-display: swap; src: url("/assets/fonts/fraunces-latin-500-normal.woff2") format("woff2"); }
 @font-face { font-family: "Fraunces"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/fraunces-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Ubuntu"; font-style: normal; font-weight: 400; font-display: swap; src: url("/assets/fonts/ubuntu-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Ubuntu"; font-style: normal; font-weight: 700; font-display: swap; src: url("/assets/fonts/ubuntu-latin-700-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/plus-jakarta-sans-latin-600-normal.woff2") format("woff2"); }
@@ -132,6 +133,7 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-family: var(--display); font-wei
 .gnav > .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .logo { font-family: var(--logo); font-weight: 700; font-size: 18px; letter-spacing: .03em; color: var(--ink); white-space: nowrap; }
 .logo:hover { text-decoration: none; }
+.logo-light { font-weight: 400; }
 .nav { display: flex; align-items: stretch; gap: 30px; font-size: 14px; height: 100%; }
 .nav-item { display: flex; align-items: center; }
 .nav-link { color: var(--ink-2); }
