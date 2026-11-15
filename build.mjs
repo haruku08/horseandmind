@@ -310,7 +310,6 @@ const MENU = [
   { key: 'erwachsene', label: 'Erwachsene', href: '/pferdeunterstuetztes-coaching/', photo: 'coaching', photoAlt: 'Manuela mit zwei Pferden auf einem Feldweg', links: [
     ['Pferdegestütztes Coaching', '/pferdeunterstuetztes-coaching/', 'Das Pferd als Co-Coach – Überblick'],
     ['Ruhe im Chaos', '/ruhe-im-chaos/', 'Für Eltern neurodivergenter Kinder'],
-    ['Leadership & Team', '/pferdeunterstuetztes-coaching/leadership-team-coaching/', 'Für Leader, Teams und Familien'],
     ['Wingwave', '/wing-wave/', 'Kurzzeitcoaching bei Stress und Blockaden'],
     ['Epigenetik', '/epigenetik/', 'Was du selbst in der Hand hast']] },
   { key: 'kids', label: 'Kids', href: '/kids/', photo: 'kinder-mit-pferden', photoAlt: 'Ein Mädchen umarmt lachend das Pony Starlett', links: [
