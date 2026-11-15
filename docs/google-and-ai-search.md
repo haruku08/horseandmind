@@ -12,7 +12,7 @@ As of 15 Nov 2026. Goal: when someone asks Google, ChatGPT, Gemini, Perplexity o
 <meta name="google-site-verification" content="vMr92tYMNANsjnLDJUsPRr_3A03DIuFVyOK3flA6IU">
 ```
 
-**Update 15 Nov 2026 – the likely cause:** the token Search Console gave for the DNS record is `…flA6IUI` (43 characters, normal length); the tag on the old site is `…flA6IU` – the last character is missing. Same token, so it is the same Google account; the tag was pasted into Rank Math incompletely, Google's periodic re-check failed and the property lost its verified status. The DNS record (added 15 Nov 2026) fixes this for good, and the new site carries the complete token.
+**Update 15 Nov 2026 – the likely cause:** the token Search Console gave for the DNS record is `…flA6IUI` (43 characters, normal length); the tag on the old site is `…flA6IU` – the last character is missing. Same token, so it is the same Google account; the tag was pasted into Rank Math incompletely, Google's periodic re-check failed and the property lost its verified status. The DNS record (added and verified 15 Nov 2026) fixes this for good, and the new site carries the complete token.
 
 **Recommended fix (10 minutes, permanent):**
 
