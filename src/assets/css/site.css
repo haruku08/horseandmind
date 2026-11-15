@@ -314,6 +314,13 @@ body.mega-open .mega-scrim { opacity: 1; }
 /* ---------- compare ("Welches Angebot passt?") ---------- */
 .compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px 28px; }
 .compare-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+/* Same-height rows across columns: photo, kicker, title, description, buttons and fact list line up
+   in every column (subgrid). Each column has --compare-rows children (6 by default). */
+@supports (grid-template-rows: subgrid) {
+  .compare-item { display: grid; grid-template-rows: subgrid; grid-row: span var(--compare-rows, 6); justify-items: center; align-content: start; row-gap: 10px; }
+  .compare-item > p:not(.kicker) { align-self: start; }
+  .compare-facts { align-self: stretch; }
+}
 .compare-item .ph { width: 100%; border-radius: var(--r-card); min-height: 0; aspect-ratio: 4 / 3; margin-bottom: 14px; }
 .compare-item h3 { font-size: 28px; }
 .compare-item > p { max-width: 30ch; }
