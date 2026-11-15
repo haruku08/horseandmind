@@ -43,7 +43,7 @@ Source: horseandmind.ch (WordPress 7.1.4, PHP 8.3, Apache), read via the public 
 - First 30 phone minutes free (Calendly 30 min); steps on the old site: 15 min Kennenlerngespräch, 45 min Beratungsgespräch.
 - AGB (Oct 2023) taken over word for word (cancellation 24 h for coachings; camps/workshops/team: 14 days → 50 %, 7 days → 100 %).
 - Partners with links: Biohof Binzenloo, Kinderthur, Schweizer Verband Pferdeunterstütztes Coaching, People Kids Coach, Anais Zimmermann.
-- Horses: page «Unsere Pferde» is empty; known horse: **Starlett** (photo set «Jona_Amy_Bella_Starlett» – the others are people).
+- Horses: page «Unsere Pferde» is empty; known horse: **Starlett** (photo set «Jona_Amy_Bella_Starlett» – the others are people). Owner 15 Nov 2026: current horses **Starlett and Zappa**; **Sally** was an earlier horse (portraits of all three in Drive «Imagery/2020»).
 - Team: the old «Über uns» also presents Rahel Deloof – left out on the owner's decision.
 - No Impressum page on the old site (404).
 
