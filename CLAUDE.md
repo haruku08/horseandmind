@@ -81,7 +81,8 @@ Website:
 - [ ] Legal check of Impressum, Datenschutz (now incl. Google Analytics, Zoho EU, Calendly), AGB
 - [ ] Google Business Profile with Hegifeldstrasse 6B
 - [x] Preview on GitHub Pages: https://haruku08.github.io/horseandmind/ (`.github/workflows/pages.yml`, `BASE_PATH=/horseandmind`). Repo is **public** since 13 Nov 2026. Pages deploys only from `main` → merge the work branch into `main` to update the preview. FTP deploy (`deploy.yml`) is skipped until `SITE_ENV` is set.
-- [ ] Hosting staging + switch: follow `docs/go-live-plan.md` (FTP secrets, `SITE_ENV`, staging subdomain, redirect test, Zoho test leads, backup, document-root switch, Search Console)
+- [x] Staging live 15 Nov 2026: https://staging.horseandmind.ch (unaxus, FTP account `deploy-staging@` → folder `staging.horseandmind.ch`, repo variable `SITE_ENV=staging`); forms → Zoho (`apiBase ""`), GitHub Pages keeps the demo (`API_BASE=mock`), `/admin/` only in demo builds. Redirect test passed.
+- [ ] Hosting switch: follow `docs/go-live-plan.md` (FTP secrets, `SITE_ENV`, staging subdomain, redirect test, Zoho test leads, backup, document-root switch, Search Console)
 
 Later (backend – replaces mock-api.js, same API + CRM functions):
 - [ ] Durations for Coaching / Reitpädagogik in `site.json` services

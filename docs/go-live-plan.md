@@ -31,13 +31,15 @@ Hosting: **unaxus.ch**, managed hosting with **cPanel** (Apache). Login: myunaxu
 1. **Subdomain:** cPanel → *Domains* (older cPanel: *Subdomains*) → create `staging.horseandmind.ch`. Set the document root **outside** `public_html`, e.g. `staging.horseandmind.ch` (next to `public_html`, not inside it). Inside `public_html` the WordPress `.htaccess` would also apply to the staging folder and spoil the redirect test.
 2. **HTTPS:** cPanel → *SSL/TLS Status* → tick the subdomain → *Run AutoSSL* (free Let's Encrypt certificate). If AutoSSL is missing, ask unaxus support (some entry packages charge for SSL).
 3. **Optional password:** cPanel → *Directory Privacy* → the staging folder → password protection. Good for privacy, but Claude's tests then need the password. Without it the site is still noindex.
-4. **FTP account for the deploy:** cPanel → *FTP Accounts* → new account, e.g. `deploy-staging@horseandmind.ch`, strong password, **directory = the staging folder** from step 1. This account can only write there, so the WordPress site is safe.
+4. **FTP account for the deploy:** cPanel → *FTP Accounts* → new account, e.g. `deploy-staging@horseandmind.ch`, strong password, **directory = the staging folder** from step 1 (cPanel pre-fills the directory from the login name – clear the field and type `staging.horseandmind.ch` after entering the login). This account can only write there, so the WordPress site is safe.
 5. **GitHub** (Settings → Secrets and variables → Actions):
    - Secrets: `FTP_SERVER` = `ftp.horseandmind.ch` (if that does not connect: the server name from cPanel's right column «Allgemeine Informationen» / unaxus welcome email), `FTP_USERNAME` = the full account name incl. `@horseandmind.ch`, `FTP_PASSWORD`, `FTP_DIR` = `./` (the account already starts in the staging folder).
    - Variable: `SITE_ENV` = `staging`.
 6. Claude sets `apiBase` to `""` in `site.json` (forms → Zoho; the GitHub Pages preview keeps the demo via `API_BASE=mock` in `pages.yml`), merges into `main` and checks the deploy run log.
 
 ## 3. Test on staging.horseandmind.ch
+
+**Status 15 Nov 2026:** step 2 done – staging live, deploy on every push to `main`. Server tests passed: all 54 old URLs → 200/301 to the right page, HTTPS certificate, 404 page, `robots.txt` Disallow, noindex meta + `X-Robots-Tag`, no `/admin/`, 9 key pages on phone + desktop without errors or sideways scrolling. Open: Zoho test leads, Manuela's sign-off.
 
 Claude runs:
 - **Redirect test**: all 54 old URLs (old sitemap) + older Google addresses against staging – each must answer 200 or 301 to the right page.
@@ -56,7 +58,7 @@ You / Manuela:
 Pick a quiet weekday morning, not during a camp sign-up rush. About one hour, about one minute of downtime.
 
 1. **Back up WordPress:** cPanel → *Backup* (or *Backup Wizard*) → download a **Home Directory** backup **and** the **MySQL database** backup (or phpMyAdmin → Export). Keep both for at least 3 months, also outside the hosting.
-2. **Upload the new site next to WordPress:** cPanel → *FTP Accounts* → new account `deploy@horseandmind.ch` with directory `public_html`. In GitHub: change `FTP_USERNAME`/`FTP_PASSWORD` to this account, `FTP_DIR` = `./new/`, `SITE_ENV` = `production` → run the deploy (the production build refuses the demo backend, so the forms go to Zoho). WordPress keeps running; the new files are in `public_html/new/`.
+2. **Upload the new site next to WordPress:** cPanel → *FTP Accounts* → new account `deploy@horseandmind.ch` with directory `public_html` (again: clear the pre-filled directory first; on this account the main domain folder may be shown as `horseandmind.ch` – use the folder the domain list shows as document root of horseandmind.ch). In GitHub: change `FTP_USERNAME`/`FTP_PASSWORD` to this account, `FTP_DIR` = `./new/`, `SITE_ENV` = `production` → run the deploy (the production build refuses the demo backend, so the forms go to Zoho). WordPress keeps running; the new files are in `public_html/new/`.
 3. **Switch (method B, in cPanel's File Manager):**
    - Create `public_html/wp-old/` and move **all** WordPress files and folders into it (`wp-admin`, `wp-content`, `wp-includes`, `wp-*.php`, `index.php`, `.htaccess`, …) – everything except `new/` and `wp-old/`. Show hidden files (Settings → «Show Hidden Files») so `.htaccess` moves too.
    - Move the **contents** of `public_html/new/` (incl. our `.htaccess` and `.ftp-deploy-sync-state.json`) up into `public_html/`, delete the empty `new/`.
