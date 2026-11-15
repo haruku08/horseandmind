@@ -74,8 +74,9 @@ Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}
 
 Website:
 - [ ] Manuela reviews all page texts. Facts now from the old site (13 Nov): Reitpädagogik schedule + waitlist, kids 1:1 ab CHF 110/h, AGB, partners. Still generic copy to check: FAQ answers, «Was du mitbringen solltest» (Kursort), /kids/ hub
-- [ ] Fill `[PLACEHOLDER]`s (build lists them): adult coaching price, Ruhe im Chaos sessions + price, Wingwave duration + price, Reitpädagogik price (old CHF 45 not on current page), UID, photo credits, hosting provider, Starlett's character
-- [ ] Todo boxes: more horses (names/photos), Kursort parking/ÖV
+- [x] 15 Nov 2026: prices for Coaching, Ruhe im Chaos, Wingwave, Reitpädagogik = «Auf Anfrage» (no session count/duration shown); UID CHE-419.735.904; photos © reflected horses, Valentina Marina (reflectedhorses.ch); host unaxus GmbH, Espenstrasse 137, 9443 Widnau
+- [ ] Open placeholders: character of Starlett (Dartmoor-Pony) and Zappa (Quarter Horse) – Manuela will send
+- [ ] Todo boxes: Kursort parking/ÖV; legal check notes on AGB + Datenschutz
 - [ ] Original photos to replace the web versions (same file names), photo og-image
 - [ ] Switch forms to Zoho for go-live: `site.json` apiBase `""` (now `"mock"` for the demo); keys are filled. Send one real test lead per form
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
