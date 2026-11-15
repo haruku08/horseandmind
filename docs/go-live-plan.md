@@ -65,7 +65,7 @@ Pick a quiet weekday morning, not during a camp sign-up rush. About one hour, ab
    - Lock the old site: put a `.htaccess` with the single line `Require all denied` into `public_html/wp-old/`.
 4. GitHub: `FTP_DIR` = `./` – all future deploys go straight to `public_html`.
 5. **Smoke test right after** (Claude): home, Kids, camp page, booking page, one form → Zoho, redirect test against the live domain, `robots.txt` allows crawling, no `noindex` anywhere, cookie banner appears and Analytics loads after «Akzeptieren». cPanel → *SSL/TLS Status*: horseandmind.ch and www have a valid certificate.
-6. **Google Search Console** (needs your Google account): verify the domain, submit `https://horseandmind.ch/sitemap.xml`, request indexing of the homepage. Same in Bing Webmaster Tools.
+6. **Google Search Console** (needs your Google account): Domain property verified by DNS TXT record (see `docs/google-and-ai-search.md` – the old Rank Math token is carried over, so the existing property stays verified too), submit `https://horseandmind.ch/sitemap.xml`, request indexing of the homepage, remove the old `/sitemap_index.xml`. Same in Bing Webmaster Tools (import from Search Console).
 7. Delete the FTP account `deploy-staging` and the staging subdomain once nobody needs them.
 
 ### Rollback

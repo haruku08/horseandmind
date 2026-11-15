@@ -58,7 +58,7 @@ src/static/                   .htaccess, robots.txt → site root
 
 Build output also includes `sitemap.xml` (with git `<lastmod>`), `llms.txt` (summary for AI assistants) and per-page schema.org `@graph` (LocalBusiness, BreadcrumbList, Person on /ueber-uns/, Event per upcoming camp). FAQ blocks (`<details class="faq"><summary>…</summary><div class="faq-a">…</div></details>`) become FAQPage schema. `[ALL CAPS]` placeholders are highlighted on the page. The build warns about todo boxes, placeholders and empty photo slots. `SITE_ENV=production` makes the site indexable; anything else = noindex + robots block (deploy requires the repo variable `SITE_ENV`). `BASE_PATH=/sub` serves the site from a subfolder (GitHub Pages preview); links in HTML/CSS get the prefix, scripts use `HM_CONFIG.base`.
 
-Old-site inventory (plugins, Zoho field meaning, facts, photo sources): `docs/old-site.md`.
+Old-site inventory (plugins, Zoho field meaning, facts, photo sources): `docs/old-site.md`. Search Console, GA settings and AI-search plan: `docs/google-and-ai-search.md`.
 
 Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}}`, `{{ph:Label|class}}`, `{{year}}`. Page meta keys: `title`, `description`, `nav` (erwachsene|kids|camps|ueber), `noindex`.
 
@@ -84,6 +84,7 @@ Website:
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
 - [ ] Legal check of Impressum, Datenschutz (now incl. Google Analytics, Zoho EU, Calendly), AGB
 - [ ] Google Business Profile with Hegifeldstrasse 6B
+- [ ] Search Console lost (15 Nov 2026): old site has a Rank Math verification token from another Google account – carried over (`site.json → searchConsole.verification`, production only); Manuela to add a Domain property via DNS TXT in cPanel Zone Editor, then Bing Webmaster Tools (`bingVerification` if import fails). AI-search plan A–D in `docs/google-and-ai-search.md`
 - [x] Preview on GitHub Pages: https://haruku08.github.io/horseandmind/ (`.github/workflows/pages.yml`, `BASE_PATH=/horseandmind`). Repo is **public** since 13 Nov 2026. Pages deploys only from `main` → merge the work branch into `main` to update the preview. FTP deploy (`deploy.yml`) is skipped until `SITE_ENV` is set.
 - [x] Staging live 15 Nov 2026: https://staging.horseandmind.ch (unaxus, FTP account `deploy-staging@` → folder `staging.horseandmind.ch`, repo variable `SITE_ENV=staging`); forms → Zoho (`apiBase ""`), GitHub Pages keeps the demo (`API_BASE=mock`), `/admin/` only in demo builds. Redirect test passed.
 - [ ] Hosting switch: follow `docs/go-live-plan.md` (FTP secrets, `SITE_ENV`, staging subdomain, redirect test, Zoho test leads, backup, document-root switch, Search Console)

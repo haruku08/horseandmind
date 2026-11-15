@@ -102,6 +102,11 @@
       "childNamesField": "Twitter"
     }
   },
+  "searchConsole": {
+    "_help": "Google Search Console verification tokens (meta tag method), production builds only. The first one is copied from the old site's Rank Math head (15 Nov 2026) so whoever verified the property stays verified after the switch. Add your own token here only if you can't use the DNS method (preferred: Domain property via a TXT record in cPanel → Zone Editor).",
+    "verification": ["vMr92tYMNANsjnLDJUsPRr_3A03DIuFVyOK3flA6IU"]
+  },
+  "bingVerification": "",
   "analytics": {
     "_help": "Google Analytics 4 (same property as the old site). Loaded only in production builds and only after the visitor accepts the cookie banner.",
     "gaId": "G-RY5BHSBLTG"

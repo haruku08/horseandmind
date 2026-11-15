@@ -402,6 +402,12 @@ const pages = walk(pagesDir).filter((f) => f.endsWith('.html')).map((file) => {
 const crumb = (t) => t.split(' | ')[0].split(' – ')[0];
 const pageTitles = new Map(pages.map((p) => [p.url, crumb(p.meta.title)]));
 
+// Search engine ownership checks (Google Search Console meta-tag method, Bing Webmaster Tools), live site only
+const siteVerification = [
+  ...((site.searchConsole && site.searchConsole.verification) || []).map((t) => `<meta name="google-site-verification" content="${esc(t)}">`),
+  ...(site.bingVerification ? [`<meta name="msvalidate.01" content="${esc(site.bingVerification)}">`] : [])
+].join('\n');
+
 const indexed = [];
 const unfinished = [];
 const tbd = [];
@@ -416,6 +422,7 @@ for (const { file, body, meta, rel, url } of pages) {
     description: esc(meta.description || ''),
     canonical: site.siteUrl + url,
     site_url: site.siteUrl,
+    verification: PROD ? siteVerification : '',
     robots: !PROD ? 'noindex, nofollow' : meta.noindex ? 'noindex, follow' : 'index, follow',
     build_id: buildId,
     year: String(year),
@@ -443,9 +450,9 @@ fs.writeFileSync(path.join(out, 'sitemap.xml'),
 
 // llms.txt: a plain summary for AI assistants and answer engines (llmstxt.org).
 const llmsGroups = [
-  ['Angebot', (u) => !/^\/(ueber-uns|kontakt|termin|impressum|datenschutz|agb)\//.test(u) && u !== '/'],
+  ['Angebot', (u) => !/^\/(ueber-uns|kontakt|termin|impressum|datenschutz|agb|cookies)\//.test(u) && u !== '/'],
   ['Über Horse & Mind', (u) => /^\/(ueber-uns|kontakt|termin)\//.test(u)],
-  ['Rechtliches', (u) => /^\/(impressum|datenschutz|agb)\//.test(u)]
+  ['Rechtliches', (u) => /^\/(impressum|datenschutz|agb|cookies)\//.test(u)]
 ];
 const campLines = upcoming.map((c) => `- ${c.title}: ${formatRange(c.start, c.end)}, ${c.time} Uhr, ${campPrice(c)} (${campState(c).chip})`);
 const llms = [
