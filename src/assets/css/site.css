@@ -17,7 +17,7 @@
 :root {
   --page: #FFF8F7;        /* old rose-white */
   --surface: #FFFFFF;     /* cards, fields */
-  --tile: #F3F6F7;        /* brand Anti-flash white: tinted sections, footer */
+  --tile: #F5EAE8;        /* light Old rose (17 %): tinted sections, footer */
   --tile-2: #ECDFCE;      /* brand beige (primary light): photo placeholders, light cards */
   --dark: #262318;        /* brand Licorice: dark tiles */
   --line: #ECDFCE;        /* hairlines (brand beige) */
@@ -42,7 +42,7 @@
   --grad-rose: linear-gradient(135deg, #FFF8F7 0%, #F3DFDB 100%);
   --grad-beige: linear-gradient(135deg, #F6EFE6 0%, #ECDFCE 100%);
   --grad-amber: linear-gradient(135deg, #FFF6EC 0%, #FDE6CE 100%);
-  --grad-mist: linear-gradient(135deg, #FFFFFF 0%, #F3F6F7 100%);
+  --grad-mist: linear-gradient(135deg, #FFF8F7 0%, #F5EAE8 100%);
   --grad-title: linear-gradient(100deg, #262318 10%, #94554B 95%);
   --grad-title-light: linear-gradient(100deg, #FFF8F7 10%, #C2847A 95%);
   /* film grain (plum on light, white on dark) */
