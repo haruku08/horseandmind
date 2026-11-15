@@ -2,8 +2,9 @@
    Structure follows apple.com (global + local nav, photo heroes, tiles, highlight cards, galleries,
    compare columns, spec rows). Surfaces follow the Biings Design System (biings.design, CC BY 4.0):
    tinted text, small radii, soft lifting shadows, pastel gradients, grain, gradient titles.
-   Colors are the old horseandmind.ch palette: rose #C2847A, rose-white #FFF8F7, beige #ECDFCE,
-   dark brown #262318, near-black #141618, amber #F7AB00. */
+   Colors follow the Horse & Mind brand guide (15 Nov 2026): Old rose #C2847A, beige #ECDFCE,
+   Licorice #262318, grey #686869, Anti-flash white #F3F6F7, Snow #FFF8F7; semantic Warning #FFA042,
+   Success #6ABC49, Error #FF5998, Info #3AC5FC (with readable -ink shades for text). */
 
 @font-face { font-family: "Fraunces"; font-style: normal; font-weight: 500; font-display: swap; src: url("/assets/fonts/fraunces-latin-500-normal.woff2") format("woff2"); }
 @font-face { font-family: "Fraunces"; font-style: normal; font-weight: 600; font-display: swap; src: url("/assets/fonts/fraunces-latin-600-normal.woff2") format("woff2"); }
@@ -28,14 +29,19 @@
   --accent-dark: #7E4840;
   --accent-soft: #F8EAE7;
   --rose: #C2847A;        /* old brand rose: decoration only (too light for text) */
-  --amber: #F7AB00;       /* old highlight, sparingly */
-  --sage: #5E8442;
-  --sage-soft: #E5EFDE;
+  --amber: #FFA042;       /* brand «Warning» orange, sparingly as highlight */
+  --antiflash: #F3F6F7;   /* brand «Anti-flash white»: cool neutral surface */
+  --grey: #686869;        /* brand grey: logo wordmark */
+  /* semantic colours (brand guide 15 Nov 2026): base for icons/fills, -soft backgrounds, -ink readable text (≥ 4.5:1) */
+  --warning: #FFA042; --warning-soft: #FFF0E1; --warning-ink: #915B26;
+  --success: #6ABC49; --success-soft: #E7F4E2; --success-ink: #40712C;
+  --error: #FF5998;   --error-soft: #FFE4EF;   --error-ink: #A83B64;
+  --info: #3AC5FC;    --info-soft: #DFF6FF;    --info-ink: #206E8D;
 
   /* pastel card gradients + gradient titles */
   --grad-rose: linear-gradient(135deg, #FDF0ED 0%, #F6E0DA 100%);
   --grad-beige: linear-gradient(135deg, #F8F0E6 0%, #EEDFCC 100%);
-  --grad-amber: linear-gradient(135deg, #FFF7E6 0%, #FCEACB 100%);
+  --grad-amber: linear-gradient(135deg, #FFF6EC 0%, #FDE6CE 100%);
   --grad-mist: linear-gradient(135deg, #F8F6F4 0%, #ECEAE8 100%);
   --grad-title: linear-gradient(100deg, #262318 10%, #94554B 95%);
   --grad-title-light: linear-gradient(100deg, #FFFFFF 10%, #F2C4BA 95%);
@@ -131,8 +137,8 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-family: var(--display); font-wei
   border-bottom: 1px solid rgba(38, 35, 24, .08);
 }
 .gnav > .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.logo { font-family: var(--logo); font-weight: 700; font-size: 18px; letter-spacing: .03em; color: var(--ink); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; }
-.logo-mark { height: 34px; width: auto; flex: none; color: inherit; }
+.logo { font-family: var(--logo); font-weight: 700; font-size: 18px; letter-spacing: .03em; color: var(--grey); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; }
+.logo-mark { height: 34px; width: auto; flex: none; color: var(--rose); }
 @media (max-width: 480px) { .logo { font-size: 16px; gap: 8px; } .logo-mark { height: 28px; } }
 .logo:hover { text-decoration: none; }
 .logo-light { font-weight: 400; }
@@ -373,10 +379,10 @@ body.mega-open .mega-scrim { opacity: 1; }
 .dates-empty { padding: 32px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .dates-empty[hidden] { display: none; }
 .chip { display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: var(--r-pill); white-space: nowrap; }
-.chip--open { background: var(--sage-soft); color: #3F5C2B; }
-.chip--few { background: #FFF0CC; color: #7A5200; }
+.chip--open { background: var(--success-soft); color: var(--success-ink); }
+.chip--few { background: var(--warning-soft); color: var(--warning-ink); }
 .chip--wait { background: #F8EAE7; color: #7E4840; }
-.chip--full { background: #FDDDE0; color: #962F3A; }
+.chip--full { background: var(--error-soft); color: var(--error-ink); }
 
 /* camp teaser (dark band) */
 .band {
@@ -429,8 +435,8 @@ body.mega-open .mega-scrim { opacity: 1; }
 .form-note { font-size: 14px; color: var(--muted); }
 .form-status { border-radius: var(--r-ctl); padding: 16px 18px; font-weight: 600; }
 .form-status[hidden] { display: none; }
-.form-status--ok { background: var(--sage-soft); color: #2F3828; }
-.form-status--err { background: #F1DAD3; color: #7A2E12; }
+.form-status--ok { background: var(--success-soft); color: var(--success-ink); }
+.form-status--err { background: var(--error-soft); color: var(--error-ink); }
 .form .btn[type="submit"] { min-height: 52px; width: 100%; }
 .picked { border: 2px solid var(--accent); border-radius: var(--r-ctl); padding: 16px 18px; }
 .child + .child { border-top: 1px solid var(--line); padding-top: 16px; }
@@ -472,14 +478,14 @@ select { max-width: 100%; }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; list-style: none; margin: 0 0 20px; padding: 0 0 14px; border-bottom: 1px solid var(--line); }
 .crumbs li + li::before { content: "\203A"; margin-right: 6px; color: var(--muted); }
 .crumbs [aria-current] { color: var(--muted); }
-.fcols { display: grid; grid-template-columns: 120px repeat(4, minmax(0, 1fr)); gap: 24px; padding-bottom: 24px; }
-.fbrand img { display: block; width: 104px; height: 104px; }
+.fcols { display: grid; grid-template-columns: 160px repeat(4, minmax(0, 1fr)); gap: 24px; padding-bottom: 24px; }
+.fbrand img { display: block; width: 136px; height: auto; }
 .fcols h2 { font-family: var(--text); font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: 0; margin-bottom: 8px; }
 .fcols ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .fbottom { border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
 .fbottom nav { display: flex; flex-wrap: wrap; gap: 4px 0; }
 .fbottom nav a + a::before { content: "|"; color: var(--line); margin: 0 10px; }
-@media (max-width: 734px) { .fcols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fbrand { grid-column: 1 / -1; } .fbrand img { width: 88px; height: 88px; } }
+@media (max-width: 734px) { .fcols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fbrand { grid-column: 1 / -1; } .fbrand img { width: 120px; } }
 
 /* ---------- Biings effects ---------- */
 /* gradient titles: card titles and headlines marked .is-gradient */
