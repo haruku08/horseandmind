@@ -12,7 +12,7 @@ As of 15 Nov 2026. Goal: when someone asks Google, ChatGPT, Gemini, Perplexity o
 <meta name="google-site-verification" content="vMr92tYMNANsjnLDJUsPRr_3A03DIuFVyOK3flA6IU">
 ```
 
-So a Search Console property for horseandmind.ch **does exist and is verified** – just not under the Google account you are logged into now. Likely causes: it was set up with a different Google account (an old Gmail, the web designer's account, or the account connected inside Rank Math), or you were a «user» on someone else's property and were removed.
+**Update 15 Nov 2026 – the likely cause:** the token Search Console gave for the DNS record is `…flA6IUI` (43 characters, normal length); the tag on the old site is `…flA6IU` – the last character is missing. Same token, so it is the same Google account; the tag was pasted into Rank Math incompletely, Google's periodic re-check failed and the property lost its verified status. The DNS record (added 15 Nov 2026) fixes this for good, and the new site carries the complete token.
 
 **Recommended fix (10 minutes, permanent):**
 
@@ -24,7 +24,7 @@ Why the Domain property: it covers `https://`, `http://`, `www.` and `staging.` 
 
 **Quick alternative today:** «URL-Präfix» `https://horseandmind.ch/` → method «Google Analytics». Works immediately because the old site loads the GA tag on every page, *if* your account has «Bearbeiten» rights on the GA property. Downside: the new site loads Analytics only after cookie consent, so this method fails after go-live. Use it only as a bridge, then add the DNS record.
 
-**Already done in the repo:** the old token is copied into the new site (`site.json → searchConsole.verification`, production builds only), so whoever owns the existing property stays verified after the switch and its history (queries, clicks since years) isn't cut off. Once you have your own Domain property, also try to find the old owner (Search Console → «Einstellungen» → «Nutzer und Berechtigungen» shows owners once you're verified) – the existing property holds the older data.
+**Already done in the repo:** the complete token is in the new site (`site.json → searchConsole.verification`, production builds only), so whoever owns the existing property stays verified after the switch and its history (queries, clicks since years) isn't cut off. Once you have your own Domain property, also try to find the old owner (Search Console → «Einstellungen» → «Nutzer und Berechtigungen» shows owners once you're verified) – the existing property holds the older data.
 
 **After verifying:**
 

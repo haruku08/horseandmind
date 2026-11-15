@@ -103,8 +103,8 @@
     }
   },
   "searchConsole": {
-    "_help": "Google Search Console verification tokens (meta tag method), production builds only. The first one is copied from the old site's Rank Math head (15 Nov 2026) so whoever verified the property stays verified after the switch. Add your own token here only if you can't use the DNS method (preferred: Domain property via a TXT record in cPanel → Zone Editor).",
-    "verification": ["vMr92tYMNANsjnLDJUsPRr_3A03DIuFVyOK3flA6IU"]
+    "_help": "Google Search Console verification tokens (meta tag method), production builds only. Same token as the DNS TXT record added 15 Nov 2026 (the old site's Rank Math tag had it with the last character missing – 42 instead of 43 characters – which is probably why verification was lost). Add your own token here only if you can't use the DNS method (preferred: Domain property via a TXT record in cPanel → Zone Editor).",
+    "verification": ["vMr92tYMNANsjnLDJUsPRr_3A03DIuFVyOK3flA6IUI"]
   },
   "bingVerification": "",
   "analytics": {
