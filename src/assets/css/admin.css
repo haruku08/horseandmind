@@ -10,7 +10,7 @@
 :root {
   /* website tokens */
   --ink: #262318;          /* dark brown */
-  --ink-2: #45403A;
+  --ink-2: #262318;
   --muted: #686869;
   --accent: #94554B;       /* readable rose */
   --accent-dark: #7E4840;
@@ -18,16 +18,16 @@
   --rose: #C2847A;         /* brand rose (decoration, on dark) */
   --page: #FFF8F7;
   --beige: #ECDFCE;
-  --dark: #141618;         /* sidebar */
+  --dark: #262318;         /* brand Licorice: sidebar */
   --amber: #FFA042;
   /* admin surfaces */
-  --bg: #F7F2F0;           /* content background, a shade calmer than the website */
+  --bg: #F3F6F7;           /* brand Anti-flash white: content background */
   --surface: #FFFFFF;
-  --line: #EADFD8;
+  --line: #ECDFCE;
   --line-strong: #D6C6BC;
   --hover: #FBF3F1;
   --side-ink: #C9C4C0;
-  --side-active: #26282B;
+  --side-active: #3D2F2A;
   --ok: #40712C;  --ok-soft: #E7F4E2;       /* brand success, readable */
   --warn: #A83B64; --warn-soft: #FFE4EF;     /* brand error, readable */
   --warning-soft: #FFF0E1; --warning-ink: #915B26;
