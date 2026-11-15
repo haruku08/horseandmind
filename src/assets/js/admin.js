@@ -266,7 +266,7 @@
     var total = M.seatsTotal(id), taken = M.seatsTaken(id);
     var html = header(c.label, {
       back: ['#camps', 'Camps'],
-      sub: esc(c.title) + ' · ' + esc(c.time) + ' · CHF ' + esc(c.price),
+      sub: esc(c.title) + ' · ' + esc(c.time) + (c.price ? ' · CHF ' + esc(c.price) : ''),
       action: '<button type="button" class="btn btn--ghost btn--sm" data-action="camp-csv" data-id="' + esc(id) + '">' + icon('download') + 'Liste</button>'
     });
     html += '<form class="card inline" data-form="seats"><label for="seats">Plätze</label><input id="seats" name="seats" type="number" min="0" max="40" value="' + (total == null ? '' : total) + '" inputmode="numeric"><button class="btn btn--sm" type="submit">Speichern</button><span class="a-muted">' + taken + ' belegt</span></form>';

@@ -46,6 +46,8 @@ const PROD = ENV === 'production';
 // API_BASE overrides site.json (GitHub Pages sets API_BASE=mock so the preview keeps the demo).
 if (process.env.API_BASE !== undefined) site.apiBase = process.env.API_BASE;
 const MOCK = site.apiBase === 'mock';
+// Camp price from camps.json; while it is not confirmed (price null) a placeholder shows.
+const campPrice = (c) => (c.price ? `CHF ${c.price}` : '[PREIS CAMP]');
 if (MOCK && PROD) throw new Error('site.json apiBase is "mock" – the demo backend must not go live. Set a real apiBase (or "" for Zoho) first.');
 const camps = MOCK
   ? realCamps.concat(JSON.parse(fs.readFileSync(path.join(src, 'data/camps.mock.json'), 'utf8')).camps)
@@ -101,7 +103,7 @@ function campList(campId) {
     return `<div class="date" data-id="${c.id}" data-end="${c.end}">
   <div class="date-main">
     <span class="date-when">${formatRange(c.start, c.end)}</span>
-    <span class="date-meta">${esc(c.season)} · ${esc(c.time)} · CHF ${c.price}</span>
+    <span class="date-meta">${esc(c.season)} · ${esc(c.time)} · ${campPrice(c)}</span>
   </div>
   <span class="chip chip--${s.cls}">${s.chip}</span>
   <a class="btn${s.wait ? ' btn--outline' : ''}" href="${bookingUrl(c, s.wait)}">${s.cta}</a>
@@ -127,7 +129,7 @@ function campBand() {
   <div class="band-info">
     <p class="eyebrow">Nächstes Kids Camp</p>
     <h2>${esc(c.title)}</h2>
-    <p>${formatRange(c.start, c.end)} · ${esc(c.time)} · CHF ${c.price} · Binzenloo, Winterthur</p>
+    <p>${formatRange(c.start, c.end)} · ${esc(c.time)} · ${campPrice(c)} · Binzenloo, Winterthur</p>
   </div>
   <div class="band-action">
     <span class="chip chip--${s.cls}">${s.chip}</span>
@@ -144,7 +146,7 @@ function campOptions(campId) {
     const p2 = (n) => String(n).padStart(2, '0');
     const a = parts(c.start), b = parts(c.end);
     const zoho = `${c.title.replace(/^Das /, '')} ${a.m === b.m ? p2(a.d) + '.' : p2(a.d) + '.' + p2(a.m) + '.'}-${p2(b.d)}.${p2(b.m)}.${String(b.y).slice(2)}`;
-    return `<option value="${c.id}" data-zoho="${esc(zoho)}" data-end="${c.end}" data-wait="${s.wait ? 1 : 0}" data-label="${esc(formatRange(c.start, c.end))}" data-meta="${esc(`${c.time} · CHF ${c.price} · ${s.chip}`)}">${esc(c.title)} ${shortRange(c.start, c.end)}${suffix}</option>`;
+    return `<option value="${c.id}" data-zoho="${esc(zoho)}" data-end="${c.end}" data-wait="${s.wait ? 1 : 0}" data-label="${esc(formatRange(c.start, c.end))}" data-meta="${esc(`${c.time} · ${campPrice(c)} · ${s.chip}`)}">${esc(c.title)} ${shortRange(c.start, c.end)}${suffix}</option>`;
   });
   opts.push('<option value="interesse" data-label="Nächstes Camp" data-meta="Unverbindlich – wir melden uns, sobald die Daten stehen">Interesse fürs nächste Camp (unverbindlich)</option>');
   return opts.join('\n');
@@ -266,7 +268,7 @@ function campEvent(c, pageUrl) {
     image: site.siteUrl + '/assets/img/og-image.jpg',
     description: `${c.season}, ${days} ${days === 1 ? 'Vormittag' : 'Vormittage'} mit Pferden, Kinder-Yoga und kreativen Übungen in Winterthur.`,
     offers: {
-      '@type': 'Offer', price: c.price, priceCurrency: 'CHF', url: pageUrl,
+      '@type': 'Offer', ...(c.price ? { price: c.price, priceCurrency: 'CHF' } : {}), url: pageUrl,
       availability: s.wait ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock'
     }
   };
@@ -442,7 +444,7 @@ const llmsGroups = [
   ['Über Horse & Mind', (u) => /^\/(ueber-uns|kontakt|termin)\//.test(u)],
   ['Rechtliches', (u) => /^\/(impressum|datenschutz|agb)\//.test(u)]
 ];
-const campLines = upcoming.map((c) => `- ${c.title}: ${formatRange(c.start, c.end)}, ${c.time} Uhr, CHF ${c.price} (${campState(c).chip})`);
+const campLines = upcoming.map((c) => `- ${c.title}: ${formatRange(c.start, c.end)}, ${c.time} Uhr, ${campPrice(c)} (${campState(c).chip})`);
 const llms = [
   '# Horse & Mind',
   '',

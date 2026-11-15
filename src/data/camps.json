@@ -9,7 +9,7 @@
       "end": "2026-07-16",
       "season": "Sommerferien",
       "time": "08.30–11.30",
-      "price": 360,
+      "price": null,
       "status": "waitlist",
       "seatsLeft": null
     },
@@ -21,7 +21,7 @@
       "end": "2026-08-13",
       "season": "Sommerferien",
       "time": "08.30–11.30",
-      "price": 360,
+      "price": null,
       "status": "waitlist",
       "seatsLeft": null
     },
@@ -33,7 +33,7 @@
       "end": "2026-10-08",
       "season": "Herbstferien",
       "time": "09.00–12.00",
-      "price": 360,
+      "price": null,
       "status": "auto",
       "seatsLeft": null
     }
