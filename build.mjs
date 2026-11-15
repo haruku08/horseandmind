@@ -313,7 +313,7 @@ const MENU = [
     ['Leadership & Team', '/pferdeunterstuetztes-coaching/leadership-team-coaching/', 'Für Leader, Teams und Familien'],
     ['Wingwave', '/wing-wave/', 'Kurzzeitcoaching bei Stress und Blockaden'],
     ['Epigenetik', '/epigenetik/', 'Was du selbst in der Hand hast']] },
-  { key: 'kids', label: 'Kids', href: '/kids/', photo: 'kinder-mit-pferden', photoAlt: 'Zwei Mädchen lachen mit zwei Pferden', links: [
+  { key: 'kids', label: 'Kids', href: '/kids/', photo: 'kinder-mit-pferden', photoAlt: 'Ein Mädchen umarmt lachend das Pony Starlett', links: [
     ['Alle Kids-Angebote', '/kids/', 'Was passt zu deinem Kind?'],
     ['In der Ruhe liegt die Kraft', '/kids/in-der-ruhe-liegt-die-kraft-mit-pferden/', 'Einzelbegleitung mit den Pferden'],
     ['Reitpädagogik', '/kids/reitpaedagogik/', 'Ab 5 Jahren, in kleinen Gruppen'],
