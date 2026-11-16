@@ -76,6 +76,7 @@ Page tokens: `{{camps:list:<camp>}}`, `{{camps:band}}`, `{{camps:options:<camp>}
 
 Website:
 - [ ] Manuela reviews all page texts. Facts now from the old site (13 Nov): Reitpädagogik schedule + waitlist, kids 1:1 ab CHF 110/h, AGB, partners. Still generic copy to check: FAQ answers, «Was du mitbringen solltest» (Kursort), /kids/ hub
+- [x] 16 Nov 2026: «Familien» removed from target-group copy; no duration shown for Ruhe im Chaos (owner: leave open).
 - [x] 15 Nov 2026: prices for Coaching, Ruhe im Chaos, Wingwave, Reitpädagogik = no price shown (rows removed 15 Nov 2026, owner: prices on request; no session count/duration shown); UID CHE-419.735.904; photos © reflected horses, Valentina Marina (reflectedhorses.ch); host unaxus GmbH, Espenstrasse 137, 9443 Widnau
 - [ ] Open placeholders: kids 1:1 price `[PREIS PRO STUNDE]` (owner checking), character of Starlett (Dartmoor-Pony) and Zappa (Quarter Horse) – Manuela will send. Camp price confirmed CHF 360 (15 Nov 2026, camps.json price; null shows [PREIS CAMP])
 - [ ] Todo boxes: legal check notes on AGB + Datenschutz (Kursort «Anreise» = Google Maps route link, owner 15 Nov 2026)
