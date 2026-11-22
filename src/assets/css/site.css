@@ -294,6 +294,8 @@ body.mega-open .mega-scrim { opacity: 1; }
 }
 .step h3 { font-family: var(--text); font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
 @media (max-width: 734px) { .steps { grid-template-columns: 1fr; gap: 28px; } }
+/* two steps: two centred columns instead of an empty third slot */
+@media (min-width: 735px) { .steps:has(> .step:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; margin-inline: auto; } }
 
 /* ---------- gallery (horizontal cards) ---------- */
 .gallery { position: relative; }
