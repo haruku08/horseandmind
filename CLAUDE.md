@@ -100,7 +100,7 @@ Later (backend – replaces mock-api.js, same API + CRM functions):
 
 - 26 Oct 2026: «Ruhe im Chaos» is for **parents of neurodivergent children** (ADHS, ASS), a 3-month intensive with Epigenetik, Selbstliebe, Kommunikation – not a general adult offer. "Erwachsene" nav now goes to /pferdeunterstuetztes-coaching/ (hub). More old URLs found and redirected (see `.htaccess`), incl. Bookly pages under /buchung/ (→ /termin/, except our camp sign-up). Old phone on the site: +41 76 507 78 37.
 
-- Review 25 Oct 2026 (via Google index; live site not reachable from the sandbox): indexed URLs include `/kids/` and `/kids/workshop/` – now a `/kids/` hub page and a 301 for the workshop. Official address confirmed: Hegifeldstrasse 6B, 8404 Winterthur. Public email: info@horseandmind.ch.
+- Review 25 Oct 2026 (via Google index; live site not reachable from the sandbox): indexed URLs include `/kids/` and `/kids/workshop/` – now a `/kids/` hub page and a 301 for the workshop. Official address confirmed: Hegifeldstrasse 6B, 8404 Winterthur (the old Kontakt page's «Schlossackerstrasse 30» is wrong, owner 22 Nov 2026). Public email: info@horseandmind.ch.
 - Searching "Manuela Pattynama Horse & Mind" finds nothing – weak entity signal for Google and AI assistants; the Über-mich page, Person schema and consistent name/address across profiles fix that.
 
 - Camp dates were stale (past dates still shown as "Warteliste") – hence automatic hiding.
