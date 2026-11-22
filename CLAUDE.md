@@ -79,7 +79,7 @@ Website:
 - [x] 16 Nov 2026: «Familien» removed from target-group copy; no duration shown for Ruhe im Chaos (owner: leave open).
 - [x] 15 Nov 2026: prices for Coaching, Ruhe im Chaos, Wingwave, Reitpädagogik = no price shown (rows removed 15 Nov 2026, owner: prices on request; no session count/duration shown); UID CHE-419.735.904; photos © reflected horses, Valentina Marina (reflectedhorses.ch); host unaxus GmbH, Espenstrasse 137, 9443 Widnau
 - [x] 22 Nov 2026: kids 1:1 price = «Auf Anfrage» (owner); Starlett/Zappa texts written from the owner's brief (Starlett cute and fine, Zappa nice and gentle). Camp price confirmed CHF 360 (15 Nov 2026, camps.json price; null shows [PREIS CAMP])
-- [ ] Todo boxes: legal check notes on AGB + Datenschutz (Kursort «Anreise» = Google Maps route link, owner 15 Nov 2026)
+- [x] 22 Nov 2026: AGB + Datenschutz approved by owner, todo boxes removed (Kursort «Anreise» = Google Maps route link, owner 15 Nov 2026)
 - [ ] Original photos to replace the web versions (same file names), photo og-image
 - [ ] Switch forms to Zoho for go-live: `site.json` apiBase `""` (now `"mock"` for the demo); keys are filled. Send one real test lead per form
 - [ ] Next camp dates in `camps.json` (all 2026 dates are past)
