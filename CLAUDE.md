@@ -86,6 +86,7 @@ Website:
 - [ ] Legal check of Impressum, Datenschutz (now incl. Google Analytics, Zoho EU, Calendly), AGB
 - [ ] Google Business Profile with Hegifeldstrasse 6B
 - [x] Preview on GitHub Pages: https://haruku08.github.io/horseandmind/ (`.github/workflows/pages.yml`, `BASE_PATH=/horseandmind`). Repo is **public** since 13 Nov 2026. Pages deploys only from `main` → merge the work branch into `main` to update the preview. FTP deploy (`deploy.yml`) is skipped until `SITE_ENV` is set.
+- [x] 22 Nov 2026: /kontakt/ has no form any more (owner: show only email + phone, like the old site); Zoho now only gets the camp sign-up.
 - [x] Staging live 15 Nov 2026: https://staging.horseandmind.ch (unaxus, FTP account `deploy-staging@` → folder `staging.horseandmind.ch`, repo variable `SITE_ENV=staging`); forms → Zoho (`apiBase ""`), GitHub Pages keeps the demo (`API_BASE=mock`), `/admin/` only in demo builds. Redirect test passed.
 - [ ] Hosting switch: follow `docs/go-live-plan.md` (FTP secrets, `SITE_ENV`, staging subdomain, redirect test, Zoho test leads, backup, document-root switch, Search Console)
 
@@ -99,7 +100,7 @@ Later (backend – replaces mock-api.js, same API + CRM functions):
 
 - 26 Oct 2026: «Ruhe im Chaos» is for **parents of neurodivergent children** (ADHS, ASS), a 3-month intensive with Epigenetik, Selbstliebe, Kommunikation – not a general adult offer. "Erwachsene" nav now goes to /pferdeunterstuetztes-coaching/ (hub). More old URLs found and redirected (see `.htaccess`), incl. Bookly pages under /buchung/ (→ /termin/, except our camp sign-up). Old phone on the site: +41 76 507 78 37.
 
-- Review 25 Oct 2026 (via Google index; live site not reachable from the sandbox): indexed URLs include `/kids/` and `/kids/workshop/` – now a `/kids/` hub page and a 301 for the workshop. Official address confirmed: Hegifeldstrasse 6B, 8404 Winterthur. Public email: info@horseandmind.ch.
+- Review 25 Oct 2026 (via Google index; live site not reachable from the sandbox): indexed URLs include `/kids/` and `/kids/workshop/` – now a `/kids/` hub page and a 301 for the workshop. Official address confirmed: Hegifeldstrasse 6B, 8404 Winterthur (the old Kontakt page's «Schlossackerstrasse 30» is wrong, owner 22 Nov 2026). Public email: info@horseandmind.ch.
 - Searching "Manuela Pattynama Horse & Mind" finds nothing – weak entity signal for Google and AI assistants; the Über-mich page, Person schema and consistent name/address across profiles fix that.
 
 - Camp dates were stale (past dates still shown as "Warteliste") – hence automatic hiding.
